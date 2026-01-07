@@ -1,0 +1,48 @@
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Card } from '../../models/board.model';
+
+@Component({
+  selector: 'app-kanban-card',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div 
+      class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer group"
+      (click)="onCardClick()"
+    >
+      <div class="flex items-start justify-between gap-2">
+        <p class="text-sm text-gray-800 flex-1">{{ card.content }}</p>
+        
+        <button 
+          (click)="onDelete($event)"
+          class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition p-1"
+          title="Excluir"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      @if (card.description) {
+        <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ card.description }}</p>
+      }
+    </div>
+  `
+})
+export class KanbanCardComponent {
+  @Input({ required: true }) card!: Card;
+  @Output() edit = new EventEmitter<Card>();
+  @Output() delete = new EventEmitter<Card>();
+
+  onCardClick() {
+    this.edit.emit(this.card);
+  }
+
+  onDelete(event: Event) {
+    event.stopPropagation();
+    this.delete.emit(this.card);
+  }
+}

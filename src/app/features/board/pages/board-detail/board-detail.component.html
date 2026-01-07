@@ -1,0 +1,83 @@
+<div class="min-h-screen bg-gray-100 flex flex-col">
+  <!-- Header -->
+  <header [class]="'px-4 py-3 flex items-center gap-4 ' + (board()?.bg_color || 'bg-indigo-600')">
+    <a routerLink="/board" 
+       class="text-white/80 hover:text-white transition p-1 rounded hover:bg-white/10">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+    </a>
+    
+    <h1 class="text-white font-bold text-lg">
+      {{ board()?.title || 'Carregando...' }}
+    </h1>
+  </header>
+
+  <!-- Board Content -->
+  <main class="flex-1 p-4 overflow-x-auto">
+    @if (isLoading()) {
+      <div class="flex gap-4">
+        <div class="animate-pulse bg-gray-300 rounded-lg w-72 h-32"></div>
+        <div class="animate-pulse bg-gray-300 rounded-lg w-72 h-32"></div>
+        <div class="animate-pulse bg-gray-300 rounded-lg w-72 h-32"></div>
+      </div>
+    } @else {
+      <div class="flex gap-4 items-start">
+        <!-- Listas do Kanban -->
+        @for (list of lists(); track list.id) {
+          <app-kanban-list 
+            [list]="list"
+            [connectedLists]="connectedListIds()"
+            (updateList)="onUpdateList($event)"
+            (deleteList)="onDeleteList($event)"
+            (addCardEvent)="onAddCard($event)"
+            (editCard)="onEditCard($event)"
+            (deleteCard)="onDeleteCard($event)"
+            (cardDropped)="onCardDropped($event)"
+          />
+        }
+
+        <!-- Adicionar Nova Lista -->
+        @if (isAddingList()) {
+          <div class="bg-gray-200 rounded-lg p-3 w-72 min-w-72">
+            <input 
+              type="text"
+              [(ngModel)]="newListTitle"
+              placeholder="Nome da lista..."
+              class="w-full px-3 py-2 rounded border border-gray-300 focus:border-blue-400 focus:outline-none text-sm"
+              (keyup.enter)="addList()"
+              (keyup.escape)="cancelAddList()"
+              autofocus
+            >
+            <div class="flex gap-2 mt-2">
+              <button 
+                (click)="addList()"
+                class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1.5 rounded transition"
+              >
+                Adicionar lista
+              </button>
+              <button 
+                (click)="cancelAddList()"
+                class="text-gray-500 hover:text-gray-700 p-1.5"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        } @else {
+          <button 
+            (click)="startAddList()"
+            class="bg-white/30 hover:bg-white/50 backdrop-blur text-gray-700 rounded-lg p-3 w-72 min-w-72 text-left transition flex items-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Adicionar lista
+          </button>
+        }
+      </div>
+    }
+  </main>
+</div>
