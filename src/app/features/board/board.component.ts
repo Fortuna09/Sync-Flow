@@ -1,12 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { BoardService, Board } from './api/board.service';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   template: `
     <div class="min-h-screen bg-gray-50 flex flex-col">
       <header class="bg-white border-b px-6 py-4 flex justify-between items-center sticky top-0 z-10">
@@ -41,7 +42,7 @@ import { BoardService, Board } from './api/board.service';
           }
 
           @for (board of boards(); track board.id) {
-            <div [class]="'group relative h-32 rounded-xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden ' + board.bg_color">
+            <div [routerLink]="['/board', board.id]" [class]="'group relative h-32 rounded-xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden ' + board.bg_color">
               <div class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
               <h3 class="relative text-white font-bold text-lg shadow-black/50">{{ board.title }}</h3>
             </div>

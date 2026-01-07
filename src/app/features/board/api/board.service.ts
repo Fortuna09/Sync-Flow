@@ -1,14 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../../core/tokens/supabase.token';
+import { Board } from '../models/board.model';
 
-// Tipagem forte: fundamental para projetos Sênior
-export interface Board {
-  id: number;
-  title: string;
-  bg_color: string;
-  created_at?: string;
-  user_id?: string;
-}
+// Re-exportar para compatibilidade
+export { Board } from '../models/board.model';
 
 @Injectable({
   providedIn: 'root'
