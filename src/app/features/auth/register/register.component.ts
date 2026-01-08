@@ -63,10 +63,8 @@ export class RegisterComponent {
         last_name: lastName
       });
 
-      // Redirecionar para login após cadastro
-      this.router.navigate(['/login'], { 
-        queryParams: { registered: 'true' } 
-      });
+      // Usuário já está logado após signUp, redireciona direto para o board
+      this.router.navigate(['/board']);
     } catch (error: any) {
       this.errorMessage = error.message || 'Erro ao criar conta. Tente novamente.';
     } finally {
