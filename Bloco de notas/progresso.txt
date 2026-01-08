@@ -13,8 +13,8 @@ Fase 2 - Landing Page
 Fase 3 - Fluxo de Entrada
 ✅ Melhorar fluxo de login
 ✅ Integração com cadastro
-🔲 Tela de criar organização (pós-cadastro)
-🔲 Tela de listagem de organizações (cards)
+✅ Tela de criar organização (pós-cadastro)
+✅ Tela de listagem de organizações (cards)
 🔲 Dentro da org: criar boards, lists, cards
 
 Fase 4 - Permissões (Empresas)
@@ -26,6 +26,8 @@ Fase 4 - Permissões (Empresas)
 - Configurar confirmação de email no Supabase (atualmente usuário loga direto após signUp)
 - Tela de verificação de email
 - Reenviar email de confirmação
+- NÃO permitir apagar a própria organização (implementar tela de config primeiro)
+- Opções de organização: sair, remover membros, transferir ownership, deletar org
 
 CORES
 

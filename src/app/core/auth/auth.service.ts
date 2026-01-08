@@ -45,7 +45,8 @@ export class AuthService {
       password: pass,
     });
     if (error) throw error;
-    this.router.navigate(['/board']);
+    // Redireciona para organizações (lista ou criar se não tiver)
+    this.router.navigate(['/organizations']);
   }
 
   async signUp(email: string, pass: string, metadata?: { first_name?: string; last_name?: string }) {
