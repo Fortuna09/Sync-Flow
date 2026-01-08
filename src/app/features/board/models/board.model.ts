@@ -10,7 +10,8 @@ export interface Board {
   title: string;
   bg_color: string;
   created_at?: string;
-  user_id?: string;
+  user_id?: string;           // Quem criou o board
+  organization_id: string;    // Organização dona do board
 }
 
 export interface List {
@@ -19,7 +20,8 @@ export interface List {
   position: number;
   board_id: number;
   created_at?: string;
-  cards?: Card[]; // Cards carregados junto com a lista
+  created_by?: string;        // Quem criou a lista
+  cards?: Card[];             // Cards carregados junto com a lista
 }
 
 /**
@@ -30,11 +32,12 @@ export interface List {
  */
 export interface Card {
   id: number;
-  content: string;        // Texto principal do card (era title)
-  description?: string;   // Descrição detalhada (opcional)
+  content: string;            // Texto principal do card
+  description?: string;       // Descrição detalhada (opcional)
   position: number;
   list_id: number;
   created_at?: string;
+  created_by?: string;        // Quem criou o card
 }
 
 // DTOs para criação
