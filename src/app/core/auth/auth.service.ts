@@ -48,10 +48,13 @@ export class AuthService {
     this.router.navigate(['/board']);
   }
 
-  async signUp(email: string, pass: string) {
+  async signUp(email: string, pass: string, metadata?: { first_name?: string; last_name?: string }) {
     const { error } = await this.supabase.auth.signUp({
       email,
       password: pass,
+      options: {
+        data: metadata
+      }
     });
     if (error) throw error;
   }
