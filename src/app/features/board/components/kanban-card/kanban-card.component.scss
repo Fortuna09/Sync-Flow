@@ -1,0 +1,11 @@
+:host {
+  display: block;
+}
+
+.group {
+  &:hover {
+    button {
+      opacity: 1;
+    }
+  }
+}
