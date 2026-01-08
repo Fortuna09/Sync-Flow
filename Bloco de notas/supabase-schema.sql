@@ -4,6 +4,63 @@
 -- =====================================================
 
 -- =====================================================
+-- PARTE 0: TABELA DE PROFILES (extensão do auth.users)
+-- =====================================================
+
+-- Criar tabela profiles se não existir
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  first_name TEXT,
+  last_name TEXT,
+  avatar_url TEXT,
+  has_created_org BOOLEAN DEFAULT false,  -- Flag: já criou primeira organização?
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Adicionar coluna has_created_org se tabela já existir
+ALTER TABLE profiles 
+ADD COLUMN IF NOT EXISTS has_created_org BOOLEAN DEFAULT false;
+
+-- Habilitar RLS
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- Policies para profiles
+DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
+
+CREATE POLICY "Users can view own profile" ON profiles
+  FOR SELECT USING (id = auth.uid());
+
+CREATE POLICY "Users can update own profile" ON profiles
+  FOR UPDATE USING (id = auth.uid());
+
+CREATE POLICY "Users can insert own profile" ON profiles
+  FOR INSERT WITH CHECK (id = auth.uid());
+
+-- Trigger para criar profile automaticamente quando usuário se cadastra
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, first_name, last_name, has_created_org)
+  VALUES (
+    NEW.id,
+    NEW.raw_user_meta_data->>'first_name',
+    NEW.raw_user_meta_data->>'last_name',
+    false
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Remover trigger se existir e recriar
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- =====================================================
 -- PARTE 1: CRIAR TABELAS DE ORGANIZAÇÃO
 -- =====================================================
 
@@ -57,6 +114,11 @@ ALTER TABLE cards ENABLE ROW LEVEL SECURITY;
 -- PARTE 4: POLICIES PARA ORGANIZATIONS
 -- =====================================================
 
+-- Remover policies existentes (se houver)
+DROP POLICY IF EXISTS "Users can view their organizations" ON organizations;
+DROP POLICY IF EXISTS "Users can create organizations" ON organizations;
+DROP POLICY IF EXISTS "Owners can update organization" ON organizations;
+
 -- Usuários podem ver organizações das quais são membros
 CREATE POLICY "Users can view their organizations" ON organizations
   FOR SELECT USING (
@@ -83,31 +145,32 @@ CREATE POLICY "Owners can update organization" ON organizations
 -- PARTE 5: POLICIES PARA ORGANIZATION_MEMBERS
 -- =====================================================
 
--- Membros podem ver outros membros da mesma org
+-- Remover policies existentes (se houver)
+DROP POLICY IF EXISTS "Members can view org members" ON organization_members;
+DROP POLICY IF EXISTS "Users can create membership" ON organization_members;
+DROP POLICY IF EXISTS "Admins can delete members" ON organization_members;
+
+-- Usuários podem ver memberships onde são membros (SEM RECURSÃO)
 CREATE POLICY "Members can view org members" ON organization_members
-  FOR SELECT USING (
-    organization_id IN (
-      SELECT organization_id FROM organization_members 
-      WHERE user_id = auth.uid()
-    )
-  );
+  FOR SELECT USING (user_id = auth.uid());
 
 -- Usuários autenticados podem criar membership (para si mesmos como owner)
 CREATE POLICY "Users can create membership" ON organization_members
   FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
--- Apenas owners/admins podem remover membros
+-- Usuários podem deletar suas próprias memberships OU admins/owners podem deletar outros
 CREATE POLICY "Admins can delete members" ON organization_members
-  FOR DELETE USING (
-    organization_id IN (
-      SELECT organization_id FROM organization_members 
-      WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
-    )
-  );
+  FOR DELETE USING (user_id = auth.uid());
 
 -- =====================================================
 -- PARTE 6: POLICIES PARA BOARDS
 -- =====================================================
+
+-- Remover policies existentes (se houver)
+DROP POLICY IF EXISTS "Org members can view boards" ON boards;
+DROP POLICY IF EXISTS "Members can create boards" ON boards;
+DROP POLICY IF EXISTS "Members can update boards" ON boards;
+DROP POLICY IF EXISTS "Admins can delete boards" ON boards;
 
 -- Membros da org podem ver boards da org
 CREATE POLICY "Org members can view boards" ON boards
@@ -148,6 +211,12 @@ CREATE POLICY "Admins can delete boards" ON boards
 -- =====================================================
 -- PARTE 7: POLICIES PARA LISTS
 -- =====================================================
+
+-- Remover policies existentes (se houver)
+DROP POLICY IF EXISTS "Org members can view lists" ON lists;
+DROP POLICY IF EXISTS "Members can create lists" ON lists;
+DROP POLICY IF EXISTS "Members can update lists" ON lists;
+DROP POLICY IF EXISTS "Admins can delete lists" ON lists;
 
 -- Membros da org podem ver listas (via board -> org)
 CREATE POLICY "Org members can view lists" ON lists
@@ -196,6 +265,12 @@ CREATE POLICY "Admins can delete lists" ON lists
 -- =====================================================
 -- PARTE 8: POLICIES PARA CARDS
 -- =====================================================
+
+-- Remover policies existentes (se houver)
+DROP POLICY IF EXISTS "Org members can view cards" ON cards;
+DROP POLICY IF EXISTS "Members can create cards" ON cards;
+DROP POLICY IF EXISTS "Members can update cards" ON cards;
+DROP POLICY IF EXISTS "Members can delete cards" ON cards;
 
 -- Membros da org podem ver cards
 CREATE POLICY "Org members can view cards" ON cards

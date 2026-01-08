@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OrganizationService } from '../organization.service';
+import { ProfileService } from '../../../core/auth/profile.service';
 
 @Component({
   selector: 'app-create-organization',
@@ -14,6 +15,7 @@ import { OrganizationService } from '../organization.service';
 export class CreateOrganizationComponent {
   private fb = inject(FormBuilder);
   private orgService = inject(OrganizationService);
+  private profileService = inject(ProfileService);
   private router = inject(Router);
 
   orgForm: FormGroup = this.fb.group({
@@ -36,6 +38,9 @@ export class CreateOrganizationComponent {
 
     try {
       const org = await this.orgService.createOrganization(this.orgForm.value.name);
+      
+      // Marcar no profile que já criou organização
+      await this.profileService.markOrgCreated();
       
       // Redirecionar para a lista de organizações
       this.router.navigate(['/organizations']);

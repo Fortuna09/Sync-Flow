@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { OrganizationService, Organization } from '../organization.service';
+import { ProfileService } from '../../../core/auth/profile.service';
 
 @Component({
   selector: 'app-organization-list',
@@ -12,6 +13,7 @@ import { OrganizationService, Organization } from '../organization.service';
 })
 export class OrganizationListComponent implements OnInit {
   private orgService = inject(OrganizationService);
+  private profileService = inject(ProfileService);
   private router = inject(Router);
 
   organizations = signal<Organization[]>([]);
@@ -19,6 +21,15 @@ export class OrganizationListComponent implements OnInit {
   errorMessage = signal('');
 
   async ngOnInit(): Promise<void> {
+    // Primeiro verifica se usuário já criou org
+    const hasCreatedOrg = await this.profileService.hasCreatedOrg();
+    
+    if (!hasCreatedOrg) {
+      // Nunca criou organização, redireciona para criar
+      this.router.navigate(['/organizations/new']);
+      return;
+    }
+    
     await this.loadOrganizations();
   }
 
@@ -29,7 +40,7 @@ export class OrganizationListComponent implements OnInit {
       const orgs = await this.orgService.getMyOrganizations();
       this.organizations.set(orgs);
       
-      // Se não tem organização, redireciona para criar
+      // Se não tem organização (foi removido de todas), redireciona para criar
       if (orgs.length === 0) {
         this.router.navigate(['/organizations/new']);
       }

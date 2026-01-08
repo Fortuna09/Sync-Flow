@@ -63,8 +63,8 @@ export class RegisterComponent {
         last_name: lastName
       });
 
-      // Após cadastro, ir para criar/selecionar organização
-      this.router.navigate(['/organizations']);
+      // Após cadastro, ir DIRETO para criar primeira organização
+      this.router.navigate(['/organizations/new']);
     } catch (error: any) {
       this.errorMessage = error.message || 'Erro ao criar conta. Tente novamente.';
     } finally {
