@@ -1,32 +1,31 @@
 📋 PLANO - AUTENTICAÇÃO & ONBOARDING
 Fase 1 - Estrutura de Cadastro
 ✅ Verificar tabela de usuários no Supabase (nome, sobrenome, email, senha)
-🔲 Criar tela de cadastro com Reactive Forms (Model-Driven)
-🔲 Componentes separados: template, lógica, estilo, teste
-🔲 Referenciação @ViewChild quando necessário
+✅ Criar tela de cadastro com Reactive Forms (Model-Driven)
+✅ Componentes separados: template, lógica, estilo, teste
+✅ Referenciação @ViewChild quando necessário
+
 Fase 2 - Landing Page
-🔲 Criar tela de apresentação do software
-🔲 Botão que leva para login/cadastro
+✅ Criar tela de apresentação do software
+✅ Botão que leva para login/cadastro
 🔲 Componentes compartilhados (inputs, botões, etc.)
+
 Fase 3 - Fluxo de Entrada
-🔲 Melhorar fluxo de login
-🔲 Integração com cadastro
+✅ Melhorar fluxo de login
+✅ Integração com cadastro
+🔲 Tela de criar organização (pós-cadastro)
+🔲 Tela de listagem de organizações (cards)
+🔲 Dentro da org: criar boards, lists, cards
+
 Fase 4 - Permissões (Empresas)
 🔲 Sistema de compartilhamento de boards
-🔲 Permissões por usuário (owner, editor, viewer)
-🔲 Estrutura no banco para suportar múltiplos usuários por board
-🎯 Por onde você quer começar?
-Opções:
+🔲 Permissões por usuário (owner, admin, member, viewer)
+🔲 Estrutura no banco para suportar múltiplos usuários por org
 
-A) Verificar estrutura do banco (tabela de usuários)
-B) Criar tela de cadastro direto
-C) Criar landing page primeiro
-D) Outra ordem
-
-
-
-
-
+⚠️ PENDENTE PARA O FINAL DO PROJETO:
+- Configurar confirmação de email no Supabase (atualmente usuário loga direto após signUp)
+- Tela de verificação de email
+- Reenviar email de confirmação
 
 CORES
 

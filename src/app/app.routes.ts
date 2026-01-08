@@ -14,11 +14,37 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/register/register.component')
         .then(m => m.RegisterComponent)
   },
-  { 
-    path: 'board', 
+  // Organizações
+  {
+    path: 'organizations',
+    loadComponent: () => import('./features/organization/organization-list/organization-list.component')
+        .then(m => m.OrganizationListComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'organizations/new',
+    loadComponent: () => import('./features/organization/create-organization/create-organization.component')
+        .then(m => m.CreateOrganizationComponent),
+    canActivate: [authGuard]
+  },
+  // Boards dentro de uma organização
+  {
+    path: 'org/:orgSlug/boards',
     loadComponent: () => import('./features/board/board.component')
         .then(m => m.BoardComponent),
     canActivate: [authGuard]
+  },
+  {
+    path: 'org/:orgSlug/board/:id',
+    loadComponent: () => import('./features/board/pages/board-detail/board-detail.component')
+        .then(m => m.BoardDetailComponent),
+    canActivate: [authGuard]
+  },
+  // Rotas legadas (manter compatibilidade por enquanto)
+  { 
+    path: 'board', 
+    redirectTo: 'organizations',
+    pathMatch: 'full'
   },
   {
     path: 'board/:id',

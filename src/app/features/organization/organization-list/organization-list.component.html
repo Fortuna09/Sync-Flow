@@ -1,0 +1,53 @@
+<div class="org-list-container">
+  <div class="org-list-content">
+    <!-- Header -->
+    <div class="org-list-header">
+      <h1>Suas Organizações</h1>
+      <p>Selecione uma organização para acessar seus boards</p>
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading()) {
+      <div class="loading">
+        <span>Carregando...</span>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (errorMessage()) {
+      <div class="error-message">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <!-- Lista de organizações -->
+    @if (!isLoading() && organizations().length > 0) {
+      <div class="org-grid">
+        @for (org of organizations(); track org.id) {
+          <div class="org-card" (click)="enterOrganization(org)">
+            <div class="org-icon">
+              {{ org.name.charAt(0).toUpperCase() }}
+            </div>
+            <div class="org-info">
+              <h3>{{ org.name }}</h3>
+              <span class="org-slug">{{ org.slug }}</span>
+              @if (org.is_personal) {
+                <span class="badge personal">Pessoal</span>
+              }
+            </div>
+            <div class="org-arrow">→</div>
+          </div>
+        }
+
+        <!-- Card para criar nova org -->
+        <a routerLink="/organizations/new" class="org-card new-org">
+          <div class="org-icon add">+</div>
+          <div class="org-info">
+            <h3>Nova Organização</h3>
+            <span class="org-slug">Criar uma nova</span>
+          </div>
+        </a>
+      </div>
+    }
+  </div>
+</div>
