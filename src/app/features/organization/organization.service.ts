@@ -46,7 +46,7 @@ export class OrganizationService {
   }
 
   // Criar nova organização
-  async createOrganization(name: string): Promise<Organization> {
+  async createOrganization(name: string, isPersonal: boolean = false): Promise<Organization> {
     const { data: { user } } = await this.supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
@@ -55,7 +55,7 @@ export class OrganizationService {
     // 1. Criar a organização
     const { data: org, error: orgError } = await this.supabase
       .from('organizations')
-      .insert({ name, slug, is_personal: false })
+      .insert({ name, slug, is_personal: isPersonal })
       .select()
       .single();
 

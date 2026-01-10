@@ -1,8 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { BoardService, Board } from './api/board.service';
 import { TopbarComponent } from '../../shared/ui/topbar/topbar.component';
+import { OrganizationService, Organization } from '../organization/organization.service';
+
+type TabType = 'boards' | 'members';
 
 @Component({
   selector: 'app-board',
@@ -13,19 +16,58 @@ import { TopbarComponent } from '../../shared/ui/topbar/topbar.component';
 })
 export class BoardComponent implements OnInit {
   private boardService = inject(BoardService);
+  private orgService = inject(OrganizationService);
+  private route = inject(ActivatedRoute);
 
   // Estados Reativos (Signals)
   boards = signal<Board[]>([]);
   isLoading = signal(true);
+  activeTab = signal<TabType>('boards');
+  organization = signal<Organization | null>(null);
+  organizationName = signal('Organização');
+  organizationSlug = signal('');
 
-  ngOnInit() {
-    this.loadBoards();
+  async ngOnInit() {
+    // Pegar slug da organização da rota
+    const slug = this.route.snapshot.paramMap.get('orgSlug');
+    if (slug) {
+      this.organizationSlug.set(slug);
+      
+      // Buscar organização pelo slug
+      await this.loadOrganization(slug);
+    }
+  }
+
+  private async loadOrganization(slug: string): Promise<void> {
+    try {
+      const org = await this.orgService.getOrganizationBySlug(slug);
+      if (org) {
+        this.organization.set(org);
+        this.organizationName.set(org.name);
+        // Carregar boards da organização
+        await this.loadBoards();
+      } else {
+        console.error('Organização não encontrada');
+        this.organizationName.set('Não encontrada');
+        this.isLoading.set(false);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar organização:', error);
+      this.isLoading.set(false);
+    }
+  }
+
+  setActiveTab(tab: TabType): void {
+    this.activeTab.set(tab);
   }
 
   async loadBoards() {
+    const org = this.organization();
+    if (!org) return;
+
     this.isLoading.set(true);
     try {
-      const data = await this.boardService.getBoards();
+      const data = await this.boardService.getBoardsByOrganization(org.id);
       this.boards.set(data);
     } catch (error) {
       console.error(error);
@@ -50,6 +92,12 @@ export class BoardComponent implements OnInit {
 
   // Criar novo quadro
   async createTestBoard(): Promise<void> {
+    const org = this.organization();
+    if (!org) {
+      alert('Organização não carregada');
+      return;
+    }
+
     const title = prompt('Qual o nome do quadro?');
     if (!title) return;
 
@@ -58,7 +106,7 @@ export class BoardComponent implements OnInit {
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
     try {
-      await this.boardService.createBoard(title, randomColor);
+      await this.boardService.createBoard(title, randomColor, org.id);
       this.loadBoards();
     } catch (error) {
       console.error('Erro ao criar quadro:', error);

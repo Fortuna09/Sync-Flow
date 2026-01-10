@@ -5,15 +5,109 @@
   flex-direction: column;
 }
 
-.board-content {
+// Layout com Sidebar
+.board-layout {
   flex: 1;
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
+  display: flex;
+  overflow: hidden;
 }
 
-.board-header {
+// Sidebar (25% da tela)
+.sidebar {
+  width: 25%;
+  min-width: 240px;
+  max-width: 320px;
+  background: white;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  margin-bottom: 0.5rem;
+
+  .back-icon {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+    color: #374151;
+  }
+}
+
+.org-name {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
+
+  .org-icon {
+    font-size: 1.25rem;
+  }
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: none;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+
+  .nav-icon {
+    font-size: 1.125rem;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: #667eea;
+  }
+}
+
+// Main Content (75% da tela)
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.content-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -21,7 +115,7 @@
 }
 
 .page-title {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #1f2937;
 }
@@ -133,5 +227,55 @@
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+// Botão de Convidar (desabilitado por enquanto)
+.btn-invite {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: #e5e7eb;
+  color: #9ca3af;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: not-allowed;
+
+  .icon {
+    font-size: 1.125rem;
+  }
+}
+
+// Placeholder para Membros
+.members-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 0.75rem;
+  border: 2px dashed #e5e7eb;
+  text-align: center;
+
+  .placeholder-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #6b7280;
+    font-size: 0.9375rem;
+    max-width: 300px;
   }
 }

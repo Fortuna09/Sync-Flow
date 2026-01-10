@@ -2,40 +2,99 @@
   <!-- Topbar compartilhado -->
   <app-topbar />
 
-  <!-- Conteúdo principal -->
-  <main class="board-content">
-    <div class="board-header">
-      <h2 class="page-title">Seus Quadros</h2>
-      
-      <button (click)="createTestBoard()" class="btn-new-board">
-        <span class="icon">+</span>
-        <span>Novo Quadro</span>
-      </button>
-    </div>
+  <div class="board-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Botão Voltar -->
+      <a routerLink="/organizations" class="back-link">
+        <span class="back-icon">←</span>
+        <span>Voltar</span>
+      </a>
 
-    <div class="boards-grid">
-      @if (isLoading()) {
-        <div class="board-skeleton"></div>
-        <div class="board-skeleton"></div>
-        <div class="board-skeleton"></div>
-      }
+      <!-- Nome da Organização -->
+      <div class="org-name">
+        <span class="org-icon">🏢</span>
+        <span>{{ organizationName() }}</span>
+      </div>
 
-      @for (board of boards(); track board.id) {
-        <div [routerLink]="['/board', board.id]" class="board-card" [style.background]="getBoardGradient(board.bg_color)">
-          <div class="board-overlay"></div>
-          <h3 class="board-title">{{ board.title }}</h3>
+      <!-- Menu de Navegação -->
+      <nav class="sidebar-nav">
+        <button 
+          class="nav-item" 
+          [class.active]="activeTab() === 'boards'"
+          (click)="setActiveTab('boards')"
+        >
+          <span class="nav-icon">📋</span>
+          <span>Quadros</span>
+        </button>
+        
+        <button 
+          class="nav-item" 
+          [class.active]="activeTab() === 'members'"
+          (click)="setActiveTab('members')"
+        >
+          <span class="nav-icon">👥</span>
+          <span>Membros</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="main-content">
+      <!-- Tab: Quadros -->
+      @if (activeTab() === 'boards') {
+        <div class="content-header">
+          <h2 class="page-title">Quadros</h2>
+          
+          <button (click)="createTestBoard()" class="btn-new-board">
+            <span class="icon">+</span>
+            <span>Novo Quadro</span>
+          </button>
         </div>
-      } @empty {
-        @if (!isLoading()) {
-          <div class="empty-state">
-            <div class="empty-icon">📋</div>
-            <p class="empty-text">Você ainda não tem quadros.</p>
-            <button (click)="createTestBoard()" class="empty-action">
-              Crie o primeiro agora
-            </button>
-          </div>
-        }
+
+        <div class="boards-grid">
+          @if (isLoading()) {
+            <div class="board-skeleton"></div>
+            <div class="board-skeleton"></div>
+            <div class="board-skeleton"></div>
+          }
+
+          @for (board of boards(); track board.id) {
+            <div [routerLink]="['/board', board.id]" class="board-card" [style.background]="getBoardGradient(board.bg_color)">
+              <div class="board-overlay"></div>
+              <h3 class="board-title">{{ board.title }}</h3>
+            </div>
+          } @empty {
+            @if (!isLoading()) {
+              <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <p class="empty-text">Você ainda não tem quadros.</p>
+                <button (click)="createTestBoard()" class="empty-action">
+                  Crie o primeiro agora
+                </button>
+              </div>
+            }
+          }
+        </div>
       }
-    </div>
-  </main>
+
+      <!-- Tab: Membros -->
+      @if (activeTab() === 'members') {
+        <div class="content-header">
+          <h2 class="page-title">Membros</h2>
+          
+          <button class="btn-invite" disabled>
+            <span class="icon">+</span>
+            <span>Convidar</span>
+          </button>
+        </div>
+
+        <div class="members-placeholder">
+          <div class="placeholder-icon">👥</div>
+          <h3>Gerenciamento de Membros</h3>
+          <p>Em breve você poderá convidar e gerenciar membros da organização.</p>
+        </div>
+      }
+    </main>
+  </div>
 </div>

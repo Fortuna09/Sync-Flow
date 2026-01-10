@@ -11,7 +11,22 @@ export { Board } from '../models/board.model';
 export class BoardService {
   private supabase = inject(SUPABASE_CLIENT);
 
-  // 1. Buscar todos os boards do usuário logado
+  // 1. Buscar boards de uma organização específica
+  async getBoardsByOrganization(organizationId: string): Promise<Board[]> {
+    const { data, error } = await this.supabase
+      .from('boards')
+      .select('*')
+      .eq('organization_id', organizationId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao buscar boards:', error);
+      throw error;
+    }
+    return data as Board[];
+  }
+
+  // 2. Buscar todos os boards (legacy - para compatibilidade)
   async getBoards(): Promise<Board[]> {
     const { data, error } = await this.supabase
       .from('boards')
@@ -25,19 +40,26 @@ export class BoardService {
     return data as Board[];
   }
 
-  // 2. Criar um novo board
-  async createBoard(title: string, color: string = 'bg-blue-600') {
+  // 3. Criar um novo board dentro de uma organização
+  async createBoard(title: string, color: string = 'bg-blue-600', organizationId?: string) {
     // Pega o usuário atual para garantir a autoria
     const { data: { user } } = await this.supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
+    const insertData: any = {
+      title,
+      bg_color: color,
+      user_id: user.id
+    };
+
+    // Adicionar organization_id se fornecido
+    if (organizationId) {
+      insertData.organization_id = organizationId;
+    }
+
     const { data, error } = await this.supabase
       .from('boards')
-      .insert({
-        title,
-        bg_color: color,
-        user_id: user.id
-      })
+      .insert(insertData)
       .select()
       .single();
 
