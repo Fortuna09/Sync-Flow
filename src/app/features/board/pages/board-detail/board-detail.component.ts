@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -6,13 +6,15 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { BoardService } from '../../api/board.service';
 import { ListService } from '../../api/list.service';
 import { CardService } from '../../api/card.service';
+import { OrganizationService } from '../../../organization/organization.service';
 import { Board, List, Card } from '../../models/board.model';
 import { KanbanListComponent } from '../../components/kanban-list/kanban-list.component';
+import { CardModalComponent } from '../../components/card-modal/card-modal.component';
 
 @Component({
   selector: 'app-board-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, KanbanListComponent],
+  imports: [CommonModule, RouterLink, FormsModule, KanbanListComponent, CardModalComponent],
   templateUrl: './board-detail.component.html',
   styleUrl: './board-detail.component.scss'
 })
@@ -21,12 +23,24 @@ export class BoardDetailComponent implements OnInit {
   private boardService = inject(BoardService);
   private listService = inject(ListService);
   private cardService = inject(CardService);
+  private orgService = inject(OrganizationService);
+  private elementRef = inject(ElementRef);
 
   board = signal<Board | null>(null);
   lists = signal<List[]>([]);
   isLoading = signal(true);
   isAddingList = signal(false);
   newListTitle = '';
+  orgSlug = signal('');
+  selectedCard = signal<Card | null>(null);
+
+  // Computed helper para pegar nome da lista do cartão selecionado
+  selectedCardListName = computed(() => {
+    const card = this.selectedCard();
+    if (!card) return '';
+    const list = this.lists().find(l => l.id === card.list_id);
+    return list ? list.title : '';
+  });
 
   // IDs das listas conectadas para Drag & Drop
   connectedListIds = computed(() => 
@@ -35,6 +49,12 @@ export class BoardDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const boardId = this.route.snapshot.paramMap.get('id');
+    const slug = this.route.snapshot.paramMap.get('orgSlug');
+    
+    if (slug) {
+      this.orgSlug.set(slug);
+    }
+
     if (boardId) {
       this.loadBoard(+boardId);
     }
@@ -53,6 +73,14 @@ export class BoardDetailComponent implements OnInit {
       const foundBoard = boards.find(b => b.id === id);
       if (foundBoard) {
         this.board.set(foundBoard);
+
+        // Se não temos slug na URL, buscar da organização do board
+        if (!this.orgSlug() && foundBoard.organization_id) {
+          const org = await this.orgService.getOrganizationById(foundBoard.organization_id);
+          if (org) {
+            this.orgSlug.set(org.slug);
+          }
+        }
       }
       
       this.lists.set(lists);
@@ -68,11 +96,26 @@ export class BoardDetailComponent implements OnInit {
   startAddList() {
     this.newListTitle = '';
     this.isAddingList.set(true);
+    // Focar no input
+    setTimeout(() => {
+      const input = this.elementRef.nativeElement.querySelector('input[placeholder="Nome da lista..."]');
+      if (input) input.focus();
+    });
   }
 
   cancelAddList() {
     this.isAddingList.set(false);
     this.newListTitle = '';
+  }
+
+  // Detectar clique fora do formulário de adição de lista
+  onListFormFocusOut(event: FocusEvent) {
+    const formElement = event.currentTarget as HTMLElement;
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    
+    if (!formElement.contains(relatedTarget)) {
+      this.cancelAddList();
+    }
   }
 
   async addList() {
@@ -86,7 +129,7 @@ export class BoardDetailComponent implements OnInit {
       
       this.lists.update(current => [...current, newList]);
       this.newListTitle = '';
-      // Mantém aberto para adicionar mais
+      this.isAddingList.set(false); // Fecha o formulário
     } catch (error) {
       console.error('Erro ao criar lista:', error);
       alert('Erro ao criar lista');
@@ -139,10 +182,29 @@ export class BoardDetailComponent implements OnInit {
   }
 
   onEditCard(card: Card) {
-    // TODO: Abrir modal de edição
-    const newTitle = prompt('Editar título:', card.content);
-    if (newTitle && newTitle.trim() !== card.content) {
-      this.updateCard(card.id, card.list_id, { title: newTitle.trim() });
+    if (card) {
+       this.selectedCard.set(card);
+    }
+  }
+
+  closeCardModal() {
+    this.selectedCard.set(null);
+  }
+
+  async onModalUpdateCard(updates: { title?: string; description?: string }) {
+    const card = this.selectedCard();
+    if (card) {
+      await this.updateCard(card.id, card.list_id, updates);
+      // Atualizar o selected card com os novos dados para refletir no modal imediatamente
+      this.selectedCard.update(c => c ? ({ ...c, content: updates.title || c.content, description: updates.description || c.description }) : null);
+    }
+  }
+
+  async onModalDeleteCard() {
+    const card = this.selectedCard();
+    if (card) {
+      await this.onDeleteCard(card);
+      this.closeCardModal();
     }
   }
 

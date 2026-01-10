@@ -1,11 +1,4 @@
-<div 
-  class="bg-gray-200 rounded-lg p-3 w-72 min-w-72 flex flex-col max-h-[calc(100vh-120px)]"
-  cdkDropList
-  [cdkDropListData]="list.cards || []"
-  [id]="'list-' + list.id"
-  [cdkDropListConnectedTo]="connectedLists"
-  (cdkDropListDropped)="onCardDropped($event)"
->
+<div class="bg-gray-200 rounded-lg p-3 w-72 min-w-72 flex flex-col min-h-[50vh] max-h-[calc(100vh-120px)]">
   <!-- Header da Lista -->
   <div class="flex items-center justify-between mb-3">
     @if (isEditingTitle()) {
@@ -39,7 +32,14 @@
   </div>
   
   <!-- Cards -->
-  <div class="flex-1 overflow-y-auto space-y-2 min-h-[50px]">
+  <div 
+    class="flex-1 overflow-y-auto space-y-2 min-h-[50px]"
+    cdkDropList
+    [cdkDropListData]="list.cards || []"
+    [id]="'list-' + list.id"
+    [cdkDropListConnectedTo]="connectedLists"
+    (cdkDropListDropped)="onCardDropped($event)" 
+  >
     @for (card of list.cards; track card.id) {
       <div cdkDrag [cdkDragData]="card">
         <app-kanban-card 
@@ -55,7 +55,11 @@
   
   <!-- Adicionar Card -->
   @if (isAddingCard()) {
-    <div class="mt-3 bg-white rounded-lg p-2 shadow-sm">
+    <div 
+      class="mt-3 bg-white rounded-lg p-2 shadow-sm"
+      (focusout)="onFormFocusOut($event)"
+      tabindex="-1"
+    >
       <textarea 
         #cardInput
         [(ngModel)]="newCardTitle"

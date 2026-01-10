@@ -38,6 +38,15 @@ export interface Card {
   list_id: number;
   created_at?: string;
   created_by?: string;        // Quem criou o card
+  comments?: Comment[];       // Comentários carregados sob demanda
+}
+
+export interface Comment {
+  id: number;
+  card_id: number;
+  content: string;
+  created_at: string;
+  user_id: string; // ID do usuário que comentou
 }
 
 // DTOs para criação

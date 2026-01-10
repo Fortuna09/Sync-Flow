@@ -130,4 +130,49 @@ export class CardService {
 
     await Promise.all(updates);
   }
+
+  // --- Comentários ---
+
+  async getComments(cardId: number): Promise<any[]> {
+    const { data, error } = await this.supabase
+      .from('comments')
+      .select('*')
+      .eq('card_id', cardId)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Erro ao buscar comentários:', error);
+      return []; // Retorna vazio por enquanto se a tabela não existir
+    }
+    return data;
+  }
+
+  async addComment(cardId: number, content: string): Promise<any> {
+    const { data, error } = await this.supabase
+      .from('comments')
+      .insert({
+        card_id: cardId,
+        content: content
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erro ao adicionar comentário:', error);
+      throw error;
+    }
+    return data;
+  }
+
+  async deleteComment(commentId: number): Promise<void> {
+    const { error } = await this.supabase
+      .from('comments')
+      .delete()
+      .eq('id', commentId);
+
+    if (error) {
+      console.error('Erro ao excluir comentário:', error);
+      throw error;
+    }
+  }
 }
