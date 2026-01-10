@@ -1,0 +1,60 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2>Nova Organização</h2>
+        <button class="btn-close" (click)="close()">×</button>
+      </div>
+
+      <!-- Tabs / Options -->
+      <div class="modal-body">
+        <!-- Criar nova organização -->
+        <div class="option-card">
+          <div class="option-icon">🏢</div>
+          <div class="option-info">
+            <h3>Criar nova organização</h3>
+            <p>Crie um workspace para sua equipe</p>
+          </div>
+        </div>
+
+        <form [formGroup]="orgForm" (ngSubmit)="submit()">
+          <div class="form-group">
+            <label for="orgName">Nome da organização</label>
+            <input 
+              type="text" 
+              id="orgName" 
+              formControlName="name"
+              placeholder="Ex: Minha Empresa"
+              [class.error]="name?.invalid && name?.touched"
+            >
+            @if (name?.invalid && name?.touched) {
+              <span class="error-text">
+                @if (name?.errors?.['required']) { Nome é obrigatório }
+                @else if (name?.errors?.['minlength']) { Mínimo 2 caracteres }
+              </span>
+            }
+          </div>
+
+          <button type="submit" class="btn-primary" [disabled]="isLoading">
+            Criar organização
+          </button>
+        </form>
+
+        <div class="divider">
+          <span>ou</span>
+        </div>
+
+        <!-- Entrar em organização existente -->
+        <button class="option-card clickable" (click)="joinOrganization()">
+          <div class="option-icon">🔗</div>
+          <div class="option-info">
+            <h3>Entrar em organização</h3>
+            <p>Use um código de convite para entrar</p>
+          </div>
+          <span class="coming-soon">Em breve</span>
+        </button>
+      </div>
+    </div>
+  </div>
+}

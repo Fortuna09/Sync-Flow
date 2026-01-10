@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed, ViewChildren, QueryList } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -27,9 +27,6 @@ export class BoardDetailComponent implements OnInit {
   isLoading = signal(true);
   isAddingList = signal(false);
   newListTitle = '';
-
-  // Referência aos componentes filhos KanbanList
-  @ViewChildren(KanbanListComponent) kanbanLists!: QueryList<KanbanListComponent>;
 
   // IDs das listas conectadas para Drag & Drop
   connectedListIds = computed(() => 

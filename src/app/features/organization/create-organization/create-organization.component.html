@@ -1,0 +1,50 @@
+<div class="create-org-container">
+  <div class="create-org-card">
+    <!-- Header -->
+    <div class="create-org-header">
+      <div class="icon">🏢</div>
+      <h1>Crie sua primeira organização</h1>
+      <p>Uma organização é onde você e sua equipe gerenciam seus projetos e boards.</p>
+    </div>
+
+    <!-- Mensagem de erro -->
+    @if (errorMessage) {
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <!-- Formulário -->
+    <form [formGroup]="orgForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Nome da organização</label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name"
+          placeholder="Ex: Minha Empresa, Equipe de Dev..."
+          [class.error]="name?.invalid && name?.touched"
+        >
+        @if (name?.invalid && name?.touched) {
+          <span class="error-text">
+            @if (name?.errors?.['required']) { Nome é obrigatório }
+            @else if (name?.errors?.['minlength']) { Mínimo 2 caracteres }
+            @else if (name?.errors?.['maxlength']) { Máximo 50 caracteres }
+          </span>
+        }
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-submit"
+        [disabled]="isLoading"
+      >
+        @if (isLoading) {
+          <span>Criando...</span>
+        } @else {
+          <span>Criar organização</span>
+        }
+      </button>
+    </form>
+  </div>
+</div>
