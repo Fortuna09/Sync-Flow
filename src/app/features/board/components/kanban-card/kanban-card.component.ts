@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Card } from '../../models/board.model';
@@ -7,38 +7,49 @@ import { Card } from '../../models/board.model';
   selector: 'app-kanban-card',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  template: `
-    <div 
-      class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer group"
-      (click)="onCardClick()"
-    >
-      <div class="flex items-start justify-between gap-2">
-        <p class="text-sm text-gray-800 flex-1">{{ card.content }}</p>
-        
-        <button 
-          (click)="onDelete($event)"
-          class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition p-1"
-          title="Excluir"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      
-      @if (card.description) {
-        <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ card.description }}</p>
-      }
-    </div>
-  `
+  templateUrl: './kanban-card.component.html',
+  styleUrl: './kanban-card.component.scss'
 })
 export class KanbanCardComponent {
+  private elementRef = inject(ElementRef);
+
   @Input({ required: true }) card!: Card;
   @Output() edit = new EventEmitter<Card>();
   @Output() delete = new EventEmitter<Card>();
 
+  // Estado de edição
+  isEditing = signal(false);
+  editContent = '';
+
   onCardClick() {
-    this.edit.emit(this.card);
+    // Para simplificar, clicar no card edita ele, já que não temos modal de detalhes ainda
+    this.startEdit();
+  }
+
+  startEdit(event?: Event) {
+    if (event) event.stopPropagation();
+    this.editContent = this.card.content;
+    this.isEditing.set(true);
+    
+    setTimeout(() => {
+      const textarea = this.elementRef.nativeElement.querySelector('textarea');
+      if (textarea) {
+        textarea.focus();
+        textarea.select();
+      }
+    });
+  }
+
+  saveEdit() {
+    if (this.editContent.trim() && this.editContent !== this.card.content) {
+      this.edit.emit({ ...this.card, content: this.editContent.trim() });
+    }
+    this.isEditing.set(false);
+  }
+
+  cancelEdit() {
+    this.isEditing.set(false);
+    this.editContent = '';
   }
 
   onDelete(event: Event) {

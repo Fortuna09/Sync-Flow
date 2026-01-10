@@ -172,10 +172,15 @@ export class BoardDetailComponent implements OnInit {
   }
 
   onEditCard(card: Card) {
-    // TODO: Abrir modal de edição
-    const newTitle = prompt('Editar título:', card.content);
-    if (newTitle && newTitle.trim() !== card.content) {
-      this.updateCard(card.id, card.list_id, { title: newTitle.trim() });
+    // O evento vem do componente KanbanCard já com o conteúdo atualizado
+    // se o usuário fez edição inline.
+    // Se o conteúdo mudou em relação ao que temos na store?
+    // Na verdade, o componente KanbanCard emite o objeto card *modificado*.
+    // Então só precisamos persistir.
+    
+    // Verificação de segurança, embora o componente filho já faça.
+    if (card.content) {
+       this.updateCard(card.id, card.list_id, { title: card.content });
     }
   }
 

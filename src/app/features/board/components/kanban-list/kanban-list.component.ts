@@ -40,6 +40,13 @@ export class KanbanListComponent {
   startEditTitle() {
     this.editTitle = this.list.title;
     this.isEditingTitle.set(true);
+    setTimeout(() => {
+      const input = this.elementRef.nativeElement.querySelector('input[type="text"]');
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    });
   }
 
   saveTitle() {
