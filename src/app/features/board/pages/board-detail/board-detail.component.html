@@ -84,4 +84,15 @@
       </div>
     }
   </main>
+  
+  <!-- Modal de Detalhes do Cartão -->
+  @if (selectedCard()) {
+    <app-card-modal 
+      [card]="selectedCard()!"
+      [listName]="selectedCardListName()"
+      (closeEvent)="closeCardModal()"
+      (updateEvent)="onModalUpdateCard($event)"
+      (deleteEvent)="onModalDeleteCard()"
+    />
+  }
 </div>

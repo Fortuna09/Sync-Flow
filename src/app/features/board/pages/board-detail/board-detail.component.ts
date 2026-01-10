@@ -9,11 +9,12 @@ import { CardService } from '../../api/card.service';
 import { OrganizationService } from '../../../organization/organization.service';
 import { Board, List, Card } from '../../models/board.model';
 import { KanbanListComponent } from '../../components/kanban-list/kanban-list.component';
+import { CardModalComponent } from '../../components/card-modal/card-modal.component';
 
 @Component({
   selector: 'app-board-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, KanbanListComponent],
+  imports: [CommonModule, RouterLink, FormsModule, KanbanListComponent, CardModalComponent],
   templateUrl: './board-detail.component.html',
   styleUrl: './board-detail.component.scss'
 })
@@ -31,6 +32,15 @@ export class BoardDetailComponent implements OnInit {
   isAddingList = signal(false);
   newListTitle = '';
   orgSlug = signal('');
+  selectedCard = signal<Card | null>(null);
+
+  // Computed helper para pegar nome da lista do cartão selecionado
+  selectedCardListName = computed(() => {
+    const card = this.selectedCard();
+    if (!card) return '';
+    const list = this.lists().find(l => l.id === card.list_id);
+    return list ? list.title : '';
+  });
 
   // IDs das listas conectadas para Drag & Drop
   connectedListIds = computed(() => 
@@ -172,15 +182,29 @@ export class BoardDetailComponent implements OnInit {
   }
 
   onEditCard(card: Card) {
-    // O evento vem do componente KanbanCard já com o conteúdo atualizado
-    // se o usuário fez edição inline.
-    // Se o conteúdo mudou em relação ao que temos na store?
-    // Na verdade, o componente KanbanCard emite o objeto card *modificado*.
-    // Então só precisamos persistir.
-    
-    // Verificação de segurança, embora o componente filho já faça.
-    if (card.content) {
-       this.updateCard(card.id, card.list_id, { title: card.content });
+    if (card) {
+       this.selectedCard.set(card);
+    }
+  }
+
+  closeCardModal() {
+    this.selectedCard.set(null);
+  }
+
+  async onModalUpdateCard(updates: { title?: string; description?: string }) {
+    const card = this.selectedCard();
+    if (card) {
+      await this.updateCard(card.id, card.list_id, updates);
+      // Atualizar o selected card com os novos dados para refletir no modal imediatamente
+      this.selectedCard.update(c => c ? ({ ...c, content: updates.title || c.content, description: updates.description || c.description }) : null);
+    }
+  }
+
+  async onModalDeleteCard() {
+    const card = this.selectedCard();
+    if (card) {
+      await this.onDeleteCard(card);
+      this.closeCardModal();
     }
   }
 
