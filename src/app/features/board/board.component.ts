@@ -1,68 +1,17 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AuthService } from '../../core/auth/auth.service';
 import { BoardService, Board } from './api/board.service';
+import { TopbarComponent } from '../../shared/ui/topbar/topbar.component';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
-    <div class="min-h-screen bg-gray-50 flex flex-col">
-      <header class="bg-white border-b px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">S</div>
-          <h1 class="text-xl font-bold text-gray-800">SyncFlow</h1>
-        </div>
-        
-        <div class="flex items-center gap-4">
-          <span class="text-sm text-gray-500">{{ auth.currentUser()?.email }}</span>
-          <button (click)="auth.signOut()" class="text-sm font-medium text-red-600 hover:bg-red-50 px-3 py-1 rounded transition">
-            Sair
-          </button>
-        </div>
-      </header>
-
-      <main class="flex-1 p-8 max-w-7xl mx-auto w-full">
-        <div class="flex justify-between items-center mb-8">
-          <h2 class="text-2xl font-bold text-gray-900">Seus Quadros</h2>
-          
-          <button (click)="createTestBoard()" 
-                  class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center gap-2">
-            <span>+</span> Novo Quadro
-          </button>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          
-          @if (isLoading()) {
-            <div class="animate-pulse h-32 bg-gray-200 rounded-xl"></div>
-            <div class="animate-pulse h-32 bg-gray-200 rounded-xl"></div>
-          }
-
-          @for (board of boards(); track board.id) {
-            <div [routerLink]="['/board', board.id]" [class]="'group relative h-32 rounded-xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden ' + board.bg_color">
-              <div class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
-              <h3 class="relative text-white font-bold text-lg shadow-black/50">{{ board.title }}</h3>
-            </div>
-          } @empty {
-            @if (!isLoading()) {
-              <div class="col-span-full text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
-                <p class="text-gray-500 text-lg">Você ainda não tem quadros.</p>
-                <button (click)="createTestBoard()" class="text-indigo-600 font-medium hover:underline mt-2">
-                  Crie o primeiro agora
-                </button>
-              </div>
-            }
-          }
-        </div>
-      </main>
-    </div>
-  `
+  imports: [CommonModule, RouterModule, TopbarComponent],
+  templateUrl: './board.component.html',
+  styleUrl: './board.component.scss'
 })
 export class BoardComponent implements OnInit {
-  auth = inject(AuthService);
   private boardService = inject(BoardService);
 
   // Estados Reativos (Signals)
@@ -86,19 +35,33 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  // Ação Temporária de Criação
-  async createTestBoard() {
-    const title = prompt('Qual o nome do projeto?');
+  // Mapear classes Tailwind para gradientes CSS
+  getBoardGradient(bgColor: string): string {
+    const colorMap: Record<string, string> = {
+      'bg-blue-600': 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+      'bg-emerald-600': 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+      'bg-purple-600': 'linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)',
+      'bg-rose-600': 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)',
+      'bg-amber-500': 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+      'bg-indigo-600': 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)'
+    };
+    return colorMap[bgColor] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+  }
+
+  // Criar novo quadro
+  async createTestBoard(): Promise<void> {
+    const title = prompt('Qual o nome do quadro?');
     if (!title) return;
 
-    // Cores aleatórias para ficar bonito
+    // Cores aleatórias
     const colors = ['bg-blue-600', 'bg-emerald-600', 'bg-purple-600', 'bg-rose-600', 'bg-amber-500'];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
     try {
       await this.boardService.createBoard(title, randomColor);
-      this.loadBoards(); // Recarrega para mostrar o novo item
+      this.loadBoards();
     } catch (error) {
+      console.error('Erro ao criar quadro:', error);
       alert('Erro ao criar quadro.');
     }
   }

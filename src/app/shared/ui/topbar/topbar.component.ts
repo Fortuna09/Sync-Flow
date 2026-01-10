@@ -1,7 +1,8 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import { ProfileService, Profile } from '../../../core/auth/profile.service';
 
 @Component({
   selector: 'app-topbar',
@@ -10,14 +11,39 @@ import { AuthService } from '../../../core/auth/auth.service';
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss'
 })
-export class TopbarComponent {
+export class TopbarComponent implements OnInit {
   private authService = inject(AuthService);
+  private profileService = inject(ProfileService);
   private router = inject(Router);
 
-  // Output para quando clicar em "Nova Organização"
-  onNewOrg = output<void>();
+  // Dados do usuário
+  userProfile = signal<Profile | null>(null);
+  userInitials = signal('U');
+  userName = signal('');
 
   isMenuOpen = false;
+
+  async ngOnInit(): Promise<void> {
+    await this.loadProfile();
+  }
+
+  private async loadProfile(): Promise<void> {
+    const profile = await this.profileService.getMyProfile();
+    if (profile) {
+      this.userProfile.set(profile);
+      
+      const firstName = profile.first_name || '';
+      const lastName = profile.last_name || '';
+      
+      // Gerar iniciais (primeira letra de cada nome)
+      const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase() || 'U';
+      this.userInitials.set(initials);
+      
+      // Nome completo
+      const fullName = [firstName, lastName].filter(Boolean).join(' ');
+      this.userName.set(fullName || 'Usuário');
+    }
+  }
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;

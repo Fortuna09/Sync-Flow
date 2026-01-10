@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { OrganizationService, Organization } from '../organization.service';
 import { ProfileService } from '../../../core/auth/profile.service';
 import { TopbarComponent } from '../../../shared/ui/topbar/topbar.component';
@@ -9,7 +9,7 @@ import { NewOrgModalComponent } from '../../../shared/ui/new-org-modal/new-org-m
 @Component({
   selector: 'app-organization-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, TopbarComponent, NewOrgModalComponent],
+  imports: [CommonModule, TopbarComponent, NewOrgModalComponent],
   templateUrl: './organization-list.component.html',
   styleUrl: './organization-list.component.scss'
 })

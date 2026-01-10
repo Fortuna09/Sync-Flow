@@ -4,10 +4,13 @@
   </div>
 
   <div class="topbar-right">
+    <!-- Nome do usuário -->
+    <span class="user-name">{{ userName() }}</span>
+    
     <!-- Menu do usuário -->
     <div class="user-menu">
       <button class="user-avatar" (click)="toggleMenu()">
-        <span>U</span>
+        <span>{{ userInitials() }}</span>
       </button>
 
       @if (isMenuOpen) {
