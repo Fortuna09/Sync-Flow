@@ -37,7 +37,8 @@ export class CreateOrganizationComponent {
     this.errorMessage = '';
 
     try {
-      const org = await this.orgService.createOrganization(this.orgForm.value.name);
+      // Primeira organização é sempre pessoal
+      const org = await this.orgService.createOrganization(this.orgForm.value.name, true);
       
       // Marcar no profile que já criou organização
       await this.profileService.markOrgCreated();
