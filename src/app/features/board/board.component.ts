@@ -1,8 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { BoardService, Board } from './api/board.service';
 import { TopbarComponent } from '../../shared/ui/topbar/topbar.component';
+
+type TabType = 'boards' | 'members';
 
 @Component({
   selector: 'app-board',
@@ -13,13 +15,36 @@ import { TopbarComponent } from '../../shared/ui/topbar/topbar.component';
 })
 export class BoardComponent implements OnInit {
   private boardService = inject(BoardService);
+  private route = inject(ActivatedRoute);
 
   // Estados Reativos (Signals)
   boards = signal<Board[]>([]);
   isLoading = signal(true);
+  activeTab = signal<TabType>('boards');
+  organizationName = signal('Organização');
+  organizationSlug = signal('');
 
   ngOnInit() {
+    // Pegar slug da organização da rota
+    const slug = this.route.snapshot.paramMap.get('orgSlug');
+    if (slug) {
+      this.organizationSlug.set(slug);
+      // Por enquanto, usar o slug como nome (depois buscar do banco)
+      this.organizationName.set(this.formatSlugToName(slug));
+    }
+    
     this.loadBoards();
+  }
+
+  private formatSlugToName(slug: string): string {
+    return slug
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  setActiveTab(tab: TabType): void {
+    this.activeTab.set(tab);
   }
 
   async loadBoards() {
