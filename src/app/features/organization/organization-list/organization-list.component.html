@@ -6,8 +6,14 @@
     <div class="org-list-content">
       <!-- Header -->
       <div class="org-list-header">
-        <h1>Suas Organizações</h1>
-        <p>Selecione uma organização para acessar seus boards</p>
+        <div class="header-content">
+          <h1>Suas Organizações</h1>
+          <p>Selecione uma organização para acessar seus boards</p>
+        </div>
+        <button class="btn-new-org" (click)="openNewOrgModal()">
+          <span class="icon">+</span>
+          <span>Nova Organização</span>
+        </button>
       </div>
 
       <!-- Loading -->
