@@ -27,6 +27,7 @@ export class BoardDetailComponent implements OnInit {
   isLoading = signal(true);
   isAddingList = signal(false);
   newListTitle = '';
+  orgSlug = signal('');
 
   // IDs das listas conectadas para Drag & Drop
   connectedListIds = computed(() => 
@@ -35,6 +36,12 @@ export class BoardDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const boardId = this.route.snapshot.paramMap.get('id');
+    const slug = this.route.snapshot.paramMap.get('orgSlug');
+    
+    if (slug) {
+      this.orgSlug.set(slug);
+    }
+
     if (boardId) {
       this.loadBoard(+boardId);
     }

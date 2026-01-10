@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-gray-100 flex flex-col">
   <!-- Header -->
   <header [class]="'px-4 py-3 flex items-center gap-4 ' + (board()?.bg_color || 'bg-indigo-600')">
-    <a routerLink="/board" 
+    <a [routerLink]="['/org', orgSlug(), 'boards']" 
        class="text-white/80 hover:text-white transition p-1 rounded hover:bg-white/10">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
