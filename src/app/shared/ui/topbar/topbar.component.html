@@ -1,0 +1,39 @@
+<header class="topbar">
+  <div class="topbar-left">
+    <a routerLink="/organizations" class="logo">SyncFlow</a>
+  </div>
+
+  <div class="topbar-right">
+    <!-- Botão Nova Organização -->
+    <button class="btn-new-org" (click)="onNewOrg.emit()">
+      <span class="icon">+</span>
+      <span class="text">Nova</span>
+    </button>
+
+    <!-- Menu do usuário -->
+    <div class="user-menu">
+      <button class="user-avatar" (click)="toggleMenu()">
+        <span>U</span>
+      </button>
+
+      @if (isMenuOpen) {
+        <div class="dropdown-overlay" (click)="closeMenu()"></div>
+        <div class="dropdown-menu">
+          <button class="dropdown-item" (click)="goToProfile()">
+            <span class="item-icon">👤</span>
+            <span>Meu Perfil</span>
+          </button>
+          <button class="dropdown-item" (click)="goToSettings()">
+            <span class="item-icon">⚙️</span>
+            <span>Configurações</span>
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item logout" (click)="logout()">
+            <span class="item-icon">🚪</span>
+            <span>Sair</span>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</header>

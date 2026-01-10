@@ -1,6 +1,9 @@
-.org-list-container {
+.org-list-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f3f4f6;
+}
+
+.org-list-container {
   padding: 2rem;
 }
 
@@ -12,22 +15,22 @@
 .org-list-header {
   text-align: center;
   margin-bottom: 2rem;
-  color: white;
 
   h1 {
     margin: 0 0 0.5rem;
     font-size: 2rem;
+    color: #1f2937;
   }
 
   p {
-    opacity: 0.9;
+    color: #6b7280;
     font-size: 1rem;
   }
 }
 
 .loading {
   text-align: center;
-  color: white;
+  color: #6b7280;
   padding: 2rem;
   font-size: 1.125rem;
 }
