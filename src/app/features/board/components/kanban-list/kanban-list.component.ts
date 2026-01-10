@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, ElementRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
@@ -13,6 +13,8 @@ import { KanbanCardComponent } from '../kanban-card/kanban-card.component';
   styleUrl: './kanban-list.component.scss'
 })
 export class KanbanListComponent {
+  private elementRef = inject(ElementRef);
+
   @Input({ required: true }) list!: List;
   @Input() connectedLists: string[] = [];
   
@@ -61,19 +63,36 @@ export class KanbanListComponent {
   startAddCard() {
     this.newCardTitle = '';
     this.isAddingCard.set(true);
+    // Pequeno delay para permitir que o DOM atualize e o input apareça para focar se necessário
+    setTimeout(() => {
+      const input = this.elementRef.nativeElement.querySelector('textarea');
+      if (input) input.focus();
+    });
   }
 
   addCard() {
     if (this.newCardTitle.trim()) {
       this.addCardEvent.emit({ listId: this.list.id, title: this.newCardTitle.trim() });
       this.newCardTitle = '';
-      // Mantém aberto para adicionar mais
+      this.isAddingCard.set(false); // Fecha o formulário
     }
   }
 
   cancelAddCard() {
     this.isAddingCard.set(false);
     this.newCardTitle = '';
+  }
+
+  // Detectar clique fora do formulário de adição
+  onFormFocusOut(event: FocusEvent) {
+    // Verifica se o novo foco está dentro do elemento do formulário
+    const formElement = event.currentTarget as HTMLElement;
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    
+    // Se o elemento clicado (relatedTarget) não faz parte do formulário, fecha
+    if (!formElement.contains(relatedTarget)) {
+      this.cancelAddCard();
+    }
   }
 
   // Card actions

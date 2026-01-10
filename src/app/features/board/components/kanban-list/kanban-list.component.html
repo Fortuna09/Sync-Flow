@@ -55,7 +55,11 @@
   
   <!-- Adicionar Card -->
   @if (isAddingCard()) {
-    <div class="mt-3 bg-white rounded-lg p-2 shadow-sm">
+    <div 
+      class="mt-3 bg-white rounded-lg p-2 shadow-sm"
+      (focusout)="onFormFocusOut($event)"
+      tabindex="-1"
+    >
       <textarea 
         #cardInput
         [(ngModel)]="newCardTitle"

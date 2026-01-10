@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -23,6 +23,7 @@ export class BoardDetailComponent implements OnInit {
   private listService = inject(ListService);
   private cardService = inject(CardService);
   private orgService = inject(OrganizationService);
+  private elementRef = inject(ElementRef);
 
   board = signal<Board | null>(null);
   lists = signal<List[]>([]);
@@ -85,11 +86,26 @@ export class BoardDetailComponent implements OnInit {
   startAddList() {
     this.newListTitle = '';
     this.isAddingList.set(true);
+    // Focar no input
+    setTimeout(() => {
+      const input = this.elementRef.nativeElement.querySelector('input[placeholder="Nome da lista..."]');
+      if (input) input.focus();
+    });
   }
 
   cancelAddList() {
     this.isAddingList.set(false);
     this.newListTitle = '';
+  }
+
+  // Detectar clique fora do formulário de adição de lista
+  onListFormFocusOut(event: FocusEvent) {
+    const formElement = event.currentTarget as HTMLElement;
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    
+    if (!formElement.contains(relatedTarget)) {
+      this.cancelAddList();
+    }
   }
 
   async addList() {
@@ -103,7 +119,7 @@ export class BoardDetailComponent implements OnInit {
       
       this.lists.update(current => [...current, newList]);
       this.newListTitle = '';
-      // Mantém aberto para adicionar mais
+      this.isAddingList.set(false); // Fecha o formulário
     } catch (error) {
       console.error('Erro ao criar lista:', error);
       alert('Erro ao criar lista');
