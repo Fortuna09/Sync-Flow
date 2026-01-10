@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output, inject, signal, ElementRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, signal, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Card } from '../../models/board.model';
+import { Card, Comment } from '../../models/board.model';
+import { CardService } from '../../api/card.service';
 
 @Component({
   selector: 'app-card-modal',
@@ -10,8 +11,9 @@ import { Card } from '../../models/board.model';
   templateUrl: './card-modal.component.html',
   styleUrl: './card-modal.component.scss'
 })
-export class CardModalComponent {
+export class CardModalComponent implements OnInit {
   private elementRef = inject(ElementRef);
+  private cardService = inject(CardService);
 
   @Input({ required: true }) card!: Card;
   @Input({ required: true }) listName!: string;
@@ -27,6 +29,64 @@ export class CardModalComponent {
   // Description Editing
   isEditingDescription = signal(false);
   editDescription = '';
+
+  // Comments
+  comments = signal<Comment[]>([]);
+  newComment = '';
+
+  ngOnInit() {
+    this.loadComments();
+  }
+
+  async loadComments() {
+    try {
+      const data = await this.cardService.getComments(this.card.id);
+      this.comments.set(data);
+    } catch (error) {
+      console.error('Failed to load comments', error);
+    }
+  }
+
+  async addComment() {
+    if (!this.newComment.trim()) return;
+    
+    try {
+      const added = await this.cardService.addComment(this.card.id, this.newComment);
+      if (added) {
+        this.comments.update(prev => [...prev, added]);
+        this.newComment = '';
+      } else {
+        // Fallback fake se backend não responder (dev only)
+        // this.comments.update(prev => [...prev, { 
+        //   id: Date.now(), 
+        //   card_id: this.card.id, 
+        //   content: this.newComment, 
+        //   created_at: new Date().toISOString(),
+        //   user_id: 'me'
+        // }]);
+        this.newComment = '';
+      }
+    } catch (error) {
+      console.error('Failed to add comment', error);
+    }
+  }
+
+  async deleteComment(id: number) {
+    if (!confirm('Excluir comentário?')) return;
+    
+    try {
+      await this.cardService.deleteComment(id);
+      this.comments.update(prev => prev.filter(c => c.id !== id));
+    } catch (error) {
+      console.error('Failed to delete comment', error);
+    }
+  }
+
+  adjustTextareaHeight(event: Event) {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto'; 
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
 
   close() {
     this.closeEvent.emit();
