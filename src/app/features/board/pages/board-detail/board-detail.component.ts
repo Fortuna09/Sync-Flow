@@ -6,6 +6,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { BoardService } from '../../api/board.service';
 import { ListService } from '../../api/list.service';
 import { CardService } from '../../api/card.service';
+import { OrganizationService } from '../../../organization/organization.service';
 import { Board, List, Card } from '../../models/board.model';
 import { KanbanListComponent } from '../../components/kanban-list/kanban-list.component';
 
@@ -21,6 +22,7 @@ export class BoardDetailComponent implements OnInit {
   private boardService = inject(BoardService);
   private listService = inject(ListService);
   private cardService = inject(CardService);
+  private orgService = inject(OrganizationService);
 
   board = signal<Board | null>(null);
   lists = signal<List[]>([]);
@@ -60,6 +62,14 @@ export class BoardDetailComponent implements OnInit {
       const foundBoard = boards.find(b => b.id === id);
       if (foundBoard) {
         this.board.set(foundBoard);
+
+        // Se não temos slug na URL, buscar da organização do board
+        if (!this.orgSlug() && foundBoard.organization_id) {
+          const org = await this.orgService.getOrganizationById(foundBoard.organization_id);
+          if (org) {
+            this.orgSlug.set(org.slug);
+          }
+        }
       }
       
       this.lists.set(lists);

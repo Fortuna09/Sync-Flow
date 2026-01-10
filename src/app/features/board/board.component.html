@@ -60,7 +60,7 @@
           }
 
           @for (board of boards(); track board.id) {
-            <div [routerLink]="['/board', board.id]" class="board-card" [style.background]="getBoardGradient(board.bg_color)">
+            <div [routerLink]="['/org', organizationSlug(), 'board', board.id]" class="board-card" [style.background]="getBoardGradient(board.bg_color)">
               <div class="board-overlay"></div>
               <h3 class="board-title">{{ board.title }}</h3>
             </div>

@@ -87,6 +87,18 @@ export class OrganizationService {
     return data;
   }
 
+  // Buscar uma organização por ID
+  async getOrganizationById(id: string): Promise<Organization | null> {
+    const { data, error } = await this.supabase
+      .from('organizations')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) return null;
+    return data;
+  }
+
   // Verificar se usuário tem pelo menos uma organização
   async hasOrganization(): Promise<boolean> {
     const orgs = await this.getMyOrganizations();
