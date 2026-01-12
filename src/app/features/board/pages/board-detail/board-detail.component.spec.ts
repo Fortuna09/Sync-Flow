@@ -17,13 +17,14 @@ describe('BoardDetailComponent', () => {
   let orgServiceSpy: jasmine.SpyObj<OrganizationService>;
 
   beforeEach(async () => {
-    boardServiceSpy = jasmine.createSpyObj('BoardService', ['getBoardById']);
+    boardServiceSpy = jasmine.createSpyObj('BoardService', ['getBoards']);
     listServiceSpy = jasmine.createSpyObj('ListService', ['getListsByBoardId']);
     cardServiceSpy = jasmine.createSpyObj('CardService', ['createCard']);
-    orgServiceSpy = jasmine.createSpyObj('OrganizationService', []);
+    orgServiceSpy = jasmine.createSpyObj('OrganizationService', ['getOrganizationById']);
 
-    boardServiceSpy.getBoardById.and.resolveTo({ id: 1, title: 'Test Board', bg_color: 'bg-blue-500', organization_id: 'org1' });
+    boardServiceSpy.getBoards.and.resolveTo([{ id: 1, title: 'Test Board', bg_color: 'bg-blue-500', organization_id: 'org1' }]);
     listServiceSpy.getListsByBoardId.and.resolveTo([]);
+    orgServiceSpy.getOrganizationById.and.resolveTo({ id: 'org1', name: 'Org 1', slug: 'org1', is_personal: false, created_at: '2023-01-01' });
 
     await TestBed.configureTestingModule({
       imports: [BoardDetailComponent],
@@ -52,6 +53,6 @@ describe('BoardDetailComponent', () => {
   });
 
   it('should load board data on init', () => {
-    expect(boardServiceSpy.getBoardById).toHaveBeenCalled();
+    expect(boardServiceSpy.getBoards).toHaveBeenCalled();
   });
 });
