@@ -10,11 +10,18 @@ import { OrganizationService } from '../../../organization/organization.service'
 import { Board, List, Card } from '../../models/board.model';
 import { KanbanListComponent } from '../../components/kanban-list/kanban-list.component';
 import { CardModalComponent } from '../../components/card-modal/card-modal.component';
+import { TopbarComponent } from '../../../../shared/ui/topbar/topbar.component';
 
 @Component({
   selector: 'app-board-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, KanbanListComponent, CardModalComponent],
+  imports: [CommonModule, 
+            RouterLink, 
+            FormsModule, 
+            KanbanListComponent, 
+            CardModalComponent,
+            TopbarComponent
+           ],
   templateUrl: './board-detail.component.html',
   styleUrl: './board-detail.component.scss'
 })

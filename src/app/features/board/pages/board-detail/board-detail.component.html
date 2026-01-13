@@ -1,4 +1,5 @@
 <div class="min-h-screen bg-gray-100 flex flex-col">
+  <app-topbar></app-topbar>
   <!-- Header -->
   <header [class]="'px-4 py-3 flex items-center gap-4 ' + (board()?.bg_color || 'bg-indigo-600')">
     <a [routerLink]="['/org', orgSlug(), 'boards']" 

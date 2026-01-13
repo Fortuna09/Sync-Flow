@@ -1,3 +1,35 @@
 :host {
-  display: block;
+  display: contents; 
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+
+    &:hover {
+      background-color: #94a3b8;
+    }
+  }
+}
+
+// Ensure the comments section takes appropriate height on mobile
+@media (max-width: 768px) {
+    .custom-scrollbar {
+        max-height: 400px; 
+    }
 }

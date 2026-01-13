@@ -34,6 +34,22 @@ export class ProfileService {
     return data;
   }
 
+  // Buscar perfil por ID
+  async getProfileById(userId: string): Promise<Profile | null> {
+    const { data, error } = await this.supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (error) {
+      // console.error(`Erro ao buscar profile do user ${userId}:`, error); // Optional logging
+      return null;
+    }
+    
+    return data;
+  }
+
   // Verificar se usuário já criou organização
   async hasCreatedOrg(): Promise<boolean> {
     const profile = await this.getMyProfile();

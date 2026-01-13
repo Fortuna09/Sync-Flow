@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Card, Comment } from '../../models/board.model';
 import { CardService } from '../../api/card.service';
+import { ProfileService } from '../../../../core/auth/profile.service';
 
 @Component({
   selector: 'app-card-modal',
@@ -14,6 +15,7 @@ import { CardService } from '../../api/card.service';
 export class CardModalComponent implements OnInit {
   private elementRef = inject(ElementRef);
   private cardService = inject(CardService);
+  private profileService = inject(ProfileService);
 
   @Input({ required: true }) card!: Card;
   @Input({ required: true }) listName!: string;
@@ -21,6 +23,9 @@ export class CardModalComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<void>();
   @Output() updateEvent = new EventEmitter<{ title?: string; description?: string }>();
   @Output() deleteEvent = new EventEmitter<void>();
+
+  // Creator Info
+  creatorName = signal<string>('');
 
   // Title Editing
   isEditingTitle = signal(false);
@@ -36,6 +41,21 @@ export class CardModalComponent implements OnInit {
 
   ngOnInit() {
     this.loadComments();
+    this.loadCreator();
+  }
+
+  async loadCreator() {
+    if (this.card.created_by) {
+      const profile = await this.profileService.getProfileById(this.card.created_by);
+      if (profile) {
+        const name = profile.first_name 
+          ? `${profile.first_name} ${profile.last_name || ''}`.trim()
+          : 'Usuário desconhecido';
+        this.creatorName.set(name);
+      } else {
+        this.creatorName.set('Usuário desconhecido');
+      }
+    }
   }
 
   async loadComments() {
