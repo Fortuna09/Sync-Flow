@@ -1,8 +1,3 @@
--- ==========================================================
--- CORREÇÃO: ADICIONAR EMAIL NA TABELA PROFILES
--- Execute este script no SQL Editor do Supabase para corrigir
--- ==========================================================
-
 -- 1. Adicionar coluna email na tabela profiles (se não existir)
 ALTER TABLE public.profiles 
 ADD COLUMN IF NOT EXISTS email TEXT;
@@ -30,5 +25,4 @@ SET email = u.email
 FROM auth.users u
 WHERE p.id = u.id AND p.email IS NULL;
 
--- 4. Agora você pode consultar os usuários assim:
--- SELECT id, first_name, email FROM profiles;
+

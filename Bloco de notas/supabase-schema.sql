@@ -1,9 +1,4 @@
 -- =====================================================
--- QUERIES SUPABASE - ESTRUTURA COMPLETA DO SYNCFLOW
--- Execute em ordem no SQL Editor do Supabase
--- =====================================================
-
--- =====================================================
 -- PARTE 0: TABELA DE PROFILES (extensão do auth.users)
 -- =====================================================
 

@@ -1,8 +1,3 @@
--- =====================================================
--- FIX URGENTE: CORRIGIR RECURSÃO NAS POLICIES
--- Execute isso AGORA no SQL Editor do Supabase
--- =====================================================
-
 -- 1. DROPAR TODAS AS POLICIES PROBLEMÁTICAS
 DROP POLICY IF EXISTS "Users can view their organizations" ON organizations;
 DROP POLICY IF EXISTS "Users can view their orgs" ON organizations;
