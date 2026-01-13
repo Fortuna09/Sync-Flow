@@ -196,11 +196,14 @@
             @for (comment of comments(); track comment.id) {
               <div class="group">
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="font-semibold text-gray-800 text-sm">Usuário</span>
+                  <span class="font-semibold text-gray-800 text-sm">
+                     {{ comment.user?.first_name }} {{ comment.user?.last_name || '' }}
+                     @if (!comment.user?.first_name) { Usuário }
+                  </span>
                   <span class="text-xs text-gray-500">{{ comment.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
                 </div>
                 <div class="bg-gray-50 p-3 rounded-md text-sm text-gray-700 relative group-hover:bg-gray-100 transition">
-                  {{ comment.content }}
+                  <p class="whitespace-pre-wrap">{{ comment.content }}</p>
                   
                   <button 
                     (click)="deleteComment(comment.id)"

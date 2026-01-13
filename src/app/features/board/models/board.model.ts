@@ -47,6 +47,11 @@ export interface Comment {
   content: string;
   created_at: string;
   user_id: string; // ID do usuário que comentou
+  user?: {
+    first_name?: string;
+    last_name?: string;
+    avatar_url?: string;
+  };
 }
 
 // DTOs para criação

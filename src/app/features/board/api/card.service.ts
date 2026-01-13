@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../../core/tokens/supabase.token';
-import { Card, CreateCardDto, UpdateCardDto } from '../models/board.model';
+import { Card, CreateCardDto, UpdateCardDto, Comment } from '../models/board.model';
 
 @Injectable({
   providedIn: 'root'
@@ -133,28 +133,48 @@ export class CardService {
 
   // --- Comentários ---
 
-  async getComments(cardId: number): Promise<any[]> {
+  async getComments(cardId: number): Promise<Comment[]> {
     const { data, error } = await this.supabase
       .from('comments')
-      .select('*')
+      .select(`
+        *,
+        user:profiles (
+          first_name,
+          last_name,
+          avatar_url
+        )
+      `)
       .eq('card_id', cardId)
       .order('created_at', { ascending: true });
 
     if (error) {
       console.error('Erro ao buscar comentários:', error);
-      return []; // Retorna vazio por enquanto se a tabela não existir
+      return []; 
     }
-    return data;
+    
+    // Mapear para adequar a estrutura se necessário, ou usar direto
+    return data as any[];
   }
 
   async addComment(cardId: number, content: string): Promise<any> {
+    const { data: { user } } = await this.supabase.auth.getUser();
+    if (!user) throw new Error('Usuário não autenticado');
+
     const { data, error } = await this.supabase
       .from('comments')
       .insert({
         card_id: cardId,
-        content: content
+        content: content,
+        user_id: user.id
       })
-      .select()
+      .select(`
+        *,
+        user:profiles (
+          first_name,
+          last_name,
+          avatar_url
+        )
+      `)
       .single();
 
     if (error) {
