@@ -23,7 +23,7 @@ export class OrganizationListComponent implements OnInit {
   errorMessage = signal('');
   isModalOpen = signal(false);
 
-  async ngOnInit(): Promise<void> {
+  async ngOnInit(){
     // Primeiro verifica se usuário já criou org
     const hasCreatedOrg = await this.profileService.hasCreatedOrg();
     

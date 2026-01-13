@@ -46,7 +46,7 @@ export class RegisterComponent {
   get password() { return this.registerForm.get('password'); }
   get confirmPassword() { return this.registerForm.get('confirmPassword'); }
 
-  async onSubmit(): Promise<void> {
+  async onSubmit(){
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
