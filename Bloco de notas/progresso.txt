@@ -21,6 +21,7 @@ Fase 4 - Permissões (Empresas)
 🔲 Sistema de compartilhamento de boards
 🔲 Permissões por usuário (owner, admin, member, viewer)
 🔲 Estrutura no banco para suportar múltiplos usuários por org
+🔲 Colocar um botao na tela do board para clicar no nome da organização caso queira mexer no nome da org, colocar tags e mostrar as tags da org
 
 ⚠️ PENDENTE PARA O FINAL DO PROJETO:
 - Configurar confirmação de email no Supabase (atualmente usuário loga direto após signUp)
@@ -29,6 +30,8 @@ Fase 4 - Permissões (Empresas)
 - NÃO permitir apagar a própria organização (implementar tela de config primeiro)
 - Opções de organização: sair, remover membros, transferir ownership, deletar org
 - Opção para aparecer um board com apenas as suas tasks
+- Metodo de pagamento
+- Enviar solicitação por email
 
 CORES
 

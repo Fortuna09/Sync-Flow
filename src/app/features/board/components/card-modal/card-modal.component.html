@@ -1,5 +1,7 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" (click)="close()">
-  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200" (click)="$event.stopPropagation()">
+  <!-- Increased width to max-w-5xl for side-by-side layout, and fixed height to prevent overlapping topbar -->
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-6xl mx-4 h-[calc(100vh-8rem)] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200" (click)="$event.stopPropagation()">
+    
     <!-- Header -->
     <div class="p-6 border-b border-gray-100 flex items-start justify-between gap-4">
       <div class="flex-1">
@@ -41,11 +43,27 @@
           </div>
         }
         
-        <div class="text-sm text-gray-500 mt-2 flex flex-col gap-1">
+        <div class="text-sm text-gray-500 mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
           <p>Na lista <span class="font-medium text-gray-700 underline">{{ listName }}</span></p>
-          @if (card.created_at) {
-            <p class="text-xs text-gray-400">Criado em {{ card.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
-          }
+          
+          <div class="flex items-center gap-2 border-l border-gray-300 pl-4">
+             <span>Criado por <strong>{{ creatorName() || '...' }}</strong></span>
+             @if (card.created_at) {
+               <span class="text-xs text-gray-400">em {{ card.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+             }
+             
+             <!-- Delete Button -->
+             <button 
+                (click)="deleteCard()"
+                class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition ml-2 flex items-center gap-1"
+                title="Excluir Cartão"
+             >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span class="text-xs font-semibold">Excluir</span>
+             </button>
+          </div>
         </div>
       </div>
 
@@ -56,170 +74,169 @@
       </button>
     </div>
 
-    <!-- Body -->
-    <div class="p-6 overflow-y-auto flex-1">
-      <div class="flex gap-6">
-        <!-- Main Content -->
-        <div class="flex-1 space-y-6">
-          <!-- Description -->
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                </svg>
-                <h3 class="font-semibold text-gray-700">Descrição</h3>
-              </div>
-              
-              @if (!isEditingDescription()) {
-                <button 
-                  (click)="startEditDescription()"
-                  class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded text-sm transition font-medium flex items-center gap-2"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                  Editar
-                </button>
-              }
-            </div>
+    <!-- Body Container with new Grid/Flex Layout -->
+    <div class="flex-1 min-h-0 overflow-hidden">
+      <div class="flex flex-col md:flex-row h-full overflow-y-auto md:overflow-hidden">
+        
+        <!-- Left Section (40%) -->
+        <div class="w-full md:w-[40%] bg-white shrink-0 flex flex-col md:h-full">
             
-            @if (isEditingDescription()) {
-              <div class="space-y-2">
-                <textarea 
-                  #descInput
-                  [(ngModel)]="editDescription"
-                  rows="8"
-                  class="w-full text-sm border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:ring-blue-500 border"
-                  placeholder="Adicione uma descrição mais detalhada..."
-                ></textarea>
-                <div class="flex items-center gap-2">
-                  <button 
-                    (click)="saveDescription()" 
-                    class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition font-medium"
-                  >
-                    Salvar
-                  </button>
-                  <button 
-                    (click)="cancelEditDescription()" 
-                    class="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded text-sm transition font-medium"
-                  >
-                    Cancelar
-                  </button>
+            <!-- Actions Section (Moved above Description) -->
+            <div class="p-6 space-y-2 shrink-0">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Ações Rápidas</h4>
+                <div class="flex flex-wrap gap-2">
+                    <button class="flex-1 bg-gray-50 hover:bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm font-medium transition flex items-center justify-center gap-2 border border-blue-100/50 disabled:opacity-50" disabled>
+                        <span>🏷️</span> Etiquetas
+                    </button>
+                    <button class="flex-1 bg-gray-50 hover:bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm font-medium transition flex items-center justify-center gap-2 border border-blue-100/50 disabled:opacity-50" disabled>
+                        <span>🕒</span> Datas
+                    </button>
                 </div>
-              </div>
-            } @else {
-              <div 
-                class="min-h-[60px]"
-                [class.text-gray-500]="!card.description"
-                [class.italic]="!card.description"
-              >
-                @if (card.description) {
-                  <p class="whitespace-pre-wrap text-gray-700 text-sm leading-relaxed">{{ card.description }}</p>
-                } @else {
-                  <p>Nenhuma descrição informada.</p>
-                }
-              </div>
-            }
-          </div>
-        </div>
-
-        <!-- Sidebar Actions -->
-        <div class="w-48 space-y-4">
-          <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Ações</h4>
-          <button 
-           class="w-full text-left bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded text-sm font-medium transition flex items-center gap-2"
-           disabled
-          >
-             <span class="opacity-50">🏷️ Etiquetas</span>
-          </button>
-          <button 
-           class="w-full text-left bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded text-sm font-medium transition flex items-center gap-2"
-           disabled
-          >
-             <span class="opacity-50">🕒 Datas</span>
-          </button>
-          
-          <div class="h-px bg-gray-200 my-2"></div>
-          
-          <button 
-            (click)="deleteCard()"
-            class="w-full text-left bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded text-sm font-medium transition flex items-center gap-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-            Excluir
-          </button>
-        </div>
-      </div>
-
-      <!-- Comments Section -->
-      <div class="mt-8 pt-6 border-t border-gray-100">
-        <div class="flex items-center gap-2 mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-          <h3 class="font-semibold text-gray-700">Comentários</h3>
-        </div>
-
-        <div class="space-y-4">
-          <!-- Input Area -->
-          <div class="flex gap-3">
-            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs uppercase">
-              EU
             </div>
-            <div class="flex-1">
-              <div class="relative">
-                <textarea 
-                  [(ngModel)]="newComment"
-                  (keyup.enter)="addComment()"
-                  rows="1"
-                  class="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition shadow-sm resize-none overflow-hidden"
-                  placeholder="Escreva um comentário..."
-                  style="min-height: 40px;"
-                  (input)="adjustTextareaHeight($event)"
-                ></textarea>
-                <button 
-                  [disabled]="!newComment.trim()"
-                  (click)="addComment()"
-                  class="absolute bottom-1.5 right-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                >
-                  Enviar
-                </button>
-              </div>
-            </div>
-          </div>
 
-          <!-- Comments List -->
-          <div class="space-y-4 pl-11">
-            @for (comment of comments(); track comment.id) {
-              <div class="group">
-                <div class="flex items-center gap-2 mb-1">
-                  <span class="font-semibold text-gray-800 text-sm">
-                     {{ comment.user?.first_name }} {{ comment.user?.last_name || '' }}
-                     @if (!comment.user?.first_name) { Usuário }
-                  </span>
-                  <span class="text-xs text-gray-500">{{ comment.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-md text-sm text-gray-700 relative group-hover:bg-gray-100 transition">
-                  <p class="whitespace-pre-wrap">{{ comment.content }}</p>
-                  
-                  <button 
-                    (click)="deleteComment(comment.id)"
-                    class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition p-1"
-                    title="Excluir"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <hr class="border-gray-100 mx-6">
+
+            <!-- Description Section -->
+            <div class="flex-1 flex flex-col min-h-0 p-6 overflow-hidden">
+                <div class="flex items-center justify-between mb-3 shrink-0">
+                  <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
                     </svg>
-                  </button>
+                    <h3 class="font-semibold text-gray-700">Descrição</h3>
+                  </div>
+                  
+                  @if (!isEditingDescription()) {
+                    <button 
+                      (click)="startEditDescription()"
+                      class="text-blue-600 hover:text-blue-800 text-xs font-medium hover:underline flex items-center gap-1"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                      Editar
+                    </button>
+                  }
+                </div>
+                
+                @if (isEditingDescription()) {
+                  <div class="space-y-2 flex flex-col flex-1 min-h-0">
+                    <textarea 
+                      #descInput
+                      [(ngModel)]="editDescription"
+                      class="w-full flex-1 text-sm border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:ring-blue-500 border bg-gray-50 resize-none custom-scrollbar"
+                      placeholder="Adicione uma descrição mais detalhada..."
+                    ></textarea>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <button 
+                        (click)="saveDescription()" 
+                        class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition font-medium"
+                      >
+                        Salvar
+                      </button>
+                      <button 
+                        (click)="cancelEditDescription()" 
+                        class="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded text-sm transition font-medium"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                } @else {
+                  <div 
+                    class="flex-1 overflow-y-auto custom-scrollbar text-sm text-gray-700 border border-gray-200 rounded-lg p-4 bg-gray-50/50"
+                    [class.text-gray-400]="!card.description"
+                    [class.italic]="!card.description"
+                  >
+                    @if (card.description) {
+                      <p class="whitespace-pre-wrap leading-loose">{{ card.description }}</p>
+                    } @else {
+                      <p>Nenhuma descrição informada.</p>
+                    }
+                  </div>
+                }
+            </div>
+        </div>
+
+        <!-- Right Section (60%) - Comments -->
+        <div class="w-full md:w-[60%] bg-gray-50/50 p-6 border-l border-gray-100 flex flex-col h-full">
+            <div class="flex items-center gap-2 mb-4 shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <h3 class="font-semibold text-gray-700">Comentários</h3>
+            </div>
+
+            <!-- Scrollable Comments Area -->
+            <div class="flex-1 overflow-y-auto space-y-4 mb-4 pr-1 custom-scrollbar">
+                @for (comment of comments(); track comment.id) {
+                  <div class="group flex gap-3">
+                     <!-- Avatar Placeholder -->
+                     <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs shrink-0 select-none">
+                        {{ (comment.user?.first_name?.[0] || 'U') | uppercase }}
+                     </div>
+                     
+                     <div class="flex-1 space-y-1">
+                        <div class="flex items-baseline justify-between">
+                            <span class="font-semibold text-gray-800 text-sm">
+                                {{ comment.user?.first_name }} {{ comment.user?.last_name || '' }}
+                                @if (!comment.user?.first_name) { Usuário }
+                            </span>
+                            <span class="text-xs text-gray-400">{{ comment.created_at | date:'dd/MM HH:mm' }}</span>
+                        </div>
+                        
+                        <div class="bg-white border border-gray-200 p-3 rounded-tr-xl rounded-br-xl rounded-bl-xl text-sm text-gray-700 relative group-hover:border-gray-300 transition shadow-sm">
+                            <p class="whitespace-pre-wrap">{{ comment.content }}</p>
+                            
+                            <button 
+                                (click)="deleteComment(comment.id)"
+                                class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition p-1 bg-white/80 rounded"
+                                title="Excluir"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                     </div>
+                  </div>
+                } @empty {
+                  <div class="flex flex-col items-center justify-center h-32 text-gray-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                      </svg>
+                      <p class="text-sm italic">Nenhum comentário ainda.</p>
+                  </div>
+                }
+            </div>
+
+            <!-- Input Area (Fixed at bottom of right col) -->
+            <div class="mt-auto pt-2">
+              <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs uppercase shrink-0 select-none">
+                  EU
+                </div>
+                <div class="flex-1 relative">
+                    <textarea 
+                      [(ngModel)]="newComment"
+                      (keyup.enter)="addComment()"
+                      rows="1"
+                      class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition shadow-sm resize-none overflow-hidden pr-16"
+                      placeholder="Escreva um comentário..."
+                      style="min-height: 42px;"
+                      (input)="adjustTextareaHeight($event)"
+                    ></textarea>
+                    <button 
+                      [disabled]="!newComment.trim()"
+                      (click)="addComment()"
+                      class="absolute bottom-1.5 right-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
+                    >
+                      Enviar
+                    </button>
                 </div>
               </div>
-            } @empty {
-              <p class="text-sm text-gray-400 italic">Nenhum comentário ainda.</p>
-            }
-          </div>
+            </div>
+
         </div>
       </div>
     </div>
