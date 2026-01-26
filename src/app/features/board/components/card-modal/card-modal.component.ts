@@ -119,7 +119,7 @@ export class CardModalComponent implements OnInit {
   // --- Title Logic ---
 
   startEditTitle() {
-    this.editTitle = this.card.content; // assuming content is title based on previous context
+    this.editTitle = this.card.content;
     this.isEditingTitle.set(true);
     setTimeout(() => {
       const input = this.elementRef.nativeElement.querySelector('input');

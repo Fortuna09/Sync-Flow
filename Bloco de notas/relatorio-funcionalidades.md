@@ -465,6 +465,5 @@ Interfaces para todas as entidades, eliminação de `any`.
 
 ---
 
-*Documento gerado em: Janeiro de 2026*
-*Versão do Angular: 17.3*
-*Versão do Supabase: 2.87.1*
+###### ... Desenvolvimentos futuros
+
