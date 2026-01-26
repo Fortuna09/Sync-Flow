@@ -80,14 +80,6 @@ export class CardModalComponent implements OnInit {
         this.comments.update(prev => [...prev, added]);
         this.newComment = '';
       } else {
-        // Fallback fake se backend não responder (dev only)
-        // this.comments.update(prev => [...prev, { 
-        //   id: Date.now(), 
-        //   card_id: this.card.id, 
-        //   content: this.newComment, 
-        //   created_at: new Date().toISOString(),
-        //   user_id: 'me'
-        // }]);
         this.newComment = '';
       }
     } catch (error) {
