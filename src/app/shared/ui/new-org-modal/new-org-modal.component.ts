@@ -1,8 +1,11 @@
-import { Component, output, input } from '@angular/core';
+import { Component, output, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { inject } from '@angular/core';
 
+/**
+ * Modal reutilizável para criação de novas organizações.
+ * Utiliza a nova API de Signals (input/output).
+ */
 @Component({
   selector: 'app-new-org-modal',
   standalone: true,
@@ -41,6 +44,6 @@ export class NewOrgModalComponent {
 
   // Placeholder para funcionalidade futura
   joinOrganization(): void {
-    console.log('Entrar em organização existente - TODO');
+    console.log('Entrar em organização existente');
   }
 }

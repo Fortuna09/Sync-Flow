@@ -1,10 +1,14 @@
-import { Component, Input, Output, EventEmitter, signal, ElementRef, ViewChild, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 import { List, Card } from '../../models/board.model';
 import { KanbanCardComponent } from '../kanban-card/kanban-card.component';
 
+/**
+ * Componente que representa uma coluna/lista no quadro Kanban.
+ * Gerencia a adição de cards e emite eventos de drag-and-drop.
+ */
 @Component({
   selector: 'app-kanban-list',
   standalone: true,

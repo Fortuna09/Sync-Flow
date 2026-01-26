@@ -2,15 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../../core/tokens/supabase.token';
 import { Card, CreateCardDto, UpdateCardDto, Comment } from '../models/board.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * Serviço responsável por operações CRUD de Cards e Comentários.
+ * Interage com as tabelas `cards` e `comments` do Supabase.
+ */
+@Injectable({ providedIn: 'root' })
 export class CardService {
   private supabase = inject(SUPABASE_CLIENT);
 
-  /**
-   * Buscar todos os cards de uma lista específica
-   */
+  /** Busca todos os cards de uma lista ordenados por posição */
   async getCardsByListId(listId: number): Promise<Card[]> {
     const { data, error } = await this.supabase
       .from('cards')

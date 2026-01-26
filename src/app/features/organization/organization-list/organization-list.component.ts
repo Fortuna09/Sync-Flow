@@ -6,6 +6,10 @@ import { ProfileService } from '../../../core/auth/profile.service';
 import { TopbarComponent } from '../../../shared/ui/topbar/topbar.component';
 import { NewOrgModalComponent } from '../../../shared/ui/new-org-modal/new-org-modal.component';
 
+/**
+ * Componente que lista todas as organizações do usuário.
+ * Redireciona para criação se o usuário ainda não possui nenhuma.
+ */
 @Component({
   selector: 'app-organization-list',
   standalone: true,

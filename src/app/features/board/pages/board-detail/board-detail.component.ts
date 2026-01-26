@@ -12,16 +12,21 @@ import { KanbanListComponent } from '../../components/kanban-list/kanban-list.co
 import { CardModalComponent } from '../../components/card-modal/card-modal.component';
 import { TopbarComponent } from '../../../../shared/ui/topbar/topbar.component';
 
+/**
+ * Componente principal de visualização e edição de um Board Kanban.
+ * Gerencia listas, cards e operações de drag-and-drop.
+ */
 @Component({
   selector: 'app-board-detail',
   standalone: true,
-  imports: [CommonModule, 
-            RouterLink, 
-            FormsModule, 
-            KanbanListComponent, 
-            CardModalComponent,
-            TopbarComponent
-           ],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    KanbanListComponent,
+    CardModalComponent,
+    TopbarComponent
+  ],
   templateUrl: './board-detail.component.html',
   styleUrl: './board-detail.component.scss'
 })

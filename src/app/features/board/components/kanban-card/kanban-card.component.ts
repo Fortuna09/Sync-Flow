@@ -2,6 +2,10 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Card } from '../../models/board.model';
 
+/**
+ * Componente que representa um cartão individual no quadro Kanban.
+ * Emite eventos de edição e exclusão para o componente pai.
+ */
 @Component({
   selector: 'app-kanban-card',
   standalone: true,

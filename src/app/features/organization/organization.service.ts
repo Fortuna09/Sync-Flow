@@ -1,22 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../core/tokens/supabase.token';
+import { Organization, OrganizationMember } from '../../core/interfaces';
 
-export interface Organization {
-  id: string;
-  name: string;
-  slug: string;
-  is_personal: boolean;
-  created_at: string;
-}
+// Re-exporta para compatibilidade com imports existentes
+export { Organization, OrganizationMember } from '../../core/interfaces';
 
-export interface OrganizationMember {
-  id: string;
-  user_id: string;
-  organization_id: string;
-  role: 'owner' | 'admin' | 'member' | 'viewer';
-  created_at: string;
-}
-
+/**
+ * Serviço responsável por gerenciar organizações (workspaces/times).
+ * Interage com as tabelas `organizations` e `organization_members` do Supabase.
+ */
 @Injectable({ providedIn: 'root' })
 export class OrganizationService {
   private supabase = inject(SUPABASE_CLIENT);

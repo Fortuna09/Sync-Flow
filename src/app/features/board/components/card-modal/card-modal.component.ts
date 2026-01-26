@@ -5,6 +5,10 @@ import { Card, Comment } from '../../models/board.model';
 import { CardService } from '../../api/card.service';
 import { ProfileService } from '../../../../core/auth/profile.service';
 
+/**
+ * Modal de detalhes do card.
+ * Permite edição de título, descrição e gerenciamento de comentários.
+ */
 @Component({
   selector: 'app-card-modal',
   standalone: true,

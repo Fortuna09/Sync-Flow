@@ -1,7 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { SUPABASE_CLIENT } from './core/tokens/supabase.token';
 
+/**
+ * Componente raiz da aplicação.
+ * Responsável apenas por renderizar o router-outlet principal.
+ */
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -9,14 +12,4 @@ import { SUPABASE_CLIENT } from './core/tokens/supabase.token';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
-  private supabase = inject(SUPABASE_CLIENT);
-
-  ngOnInit() {
-    console.log('--- TESTE DE CONEXÃO ---');
-    console.log('Supabase Client inicializado:', this.supabase);
-    this.supabase.auth.getSession().then(({ data }) => {
-        console.log('Sessão atual:', data.session); 
-    });
-  }
-}
+export class AppComponent {}

@@ -7,6 +7,10 @@ import { OrganizationService, Organization } from '../organization/organization.
 
 type TabType = 'boards' | 'members';
 
+/**
+ * Componente de listagem de boards de uma organização.
+ * Permite visualizar e criar novos quadros Kanban.
+ */
 @Component({
   selector: 'app-board',
   standalone: true,

@@ -4,6 +4,10 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ProfileService, Profile } from '../../../core/auth/profile.service';
 
+/**
+ * Componente de barra superior (header) da aplicação.
+ * Exibe informações do usuário logado e menu de ações.
+ */
 @Component({
   selector: 'app-topbar',
   standalone: true,
@@ -16,11 +20,9 @@ export class TopbarComponent implements OnInit {
   private profileService = inject(ProfileService);
   private router = inject(Router);
 
-  // Dados do usuário
   userProfile = signal<Profile | null>(null);
   userInitials = signal('U');
   userName = signal('');
-
   isMenuOpen = false;
 
   async ngOnInit(): Promise<void> {

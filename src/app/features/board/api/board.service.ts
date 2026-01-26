@@ -2,16 +2,17 @@ import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../../core/tokens/supabase.token';
 import { Board } from '../models/board.model';
 
-// Re-exportar para compatibilidade
 export { Board } from '../models/board.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * Serviço responsável por operações CRUD de Boards (quadros Kanban).
+ * Interage com a tabela `boards` do Supabase.
+ */
+@Injectable({ providedIn: 'root' })
 export class BoardService {
   private supabase = inject(SUPABASE_CLIENT);
 
-  // 1. Buscar boards de uma organização específica
+  /** Busca todos os boards de uma organização específica */
   async getBoardsByOrganization(organizationId: string): Promise<Board[]> {
     const { data, error } = await this.supabase
       .from('boards')

@@ -1,16 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../tokens/supabase.token';
+import { Profile } from '../interfaces';
 
-export interface Profile {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  avatar_url: string | null;
-  has_created_org: boolean;
-  created_at: string;
-  updated_at: string;
-}
+// Re-exporta para compatibilidade com imports existentes
+export { Profile } from '../interfaces';
 
+/**
+ * Serviço responsável por gerenciar o perfil do usuário autenticado.
+ * Interage com a tabela `profiles` do Supabase.
+ */
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
   private supabase = inject(SUPABASE_CLIENT);

@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
 
+/**
+ * Componente de login.
+ * Utiliza Reactive Forms para validação e Signals para estado de UI.
+ */
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -14,11 +18,9 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
 
-  // Estados locais da UI
   isLoading = signal(false);
   errorMessage = signal('');
 
-  // Definição do Formulário
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]]

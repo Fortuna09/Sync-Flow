@@ -2,15 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../../core/tokens/supabase.token';
 import { List, CreateListDto, UpdateListDto } from '../models/board.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * Serviço responsável por operações CRUD de Listas dentro de um Board.
+ * Interage com a tabela `lists` do Supabase.
+ */
+@Injectable({ providedIn: 'root' })
 export class ListService {
   private supabase = inject(SUPABASE_CLIENT);
 
-  /**
-   * Buscar todas as listas de um board específico
-   */
+  /** Busca todas as listas de um board com seus cards ordenados */
   async getListsByBoardId(boardId: number): Promise<List[]> {
     const { data, error } = await this.supabase
       .from('lists')

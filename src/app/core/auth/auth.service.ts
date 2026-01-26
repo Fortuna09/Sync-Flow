@@ -4,38 +4,35 @@ import { User, Session } from '@supabase/supabase-js';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { SUPABASE_CLIENT } from '../tokens/supabase.token';
 
+/**
+ * Serviço de autenticação responsável por gerenciar o estado do usuário.
+ * Utiliza Signals para reatividade e integra com Supabase Auth.
+ */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private supabase = inject(SUPABASE_CLIENT);
   private router = inject(Router);
 
-  // 1. Estados
+  /** Estado interno do usuário atual */
   private _currentUser = signal<User | null>(null);
+  /** Estado interno da sessão */
   private _session = signal<Session | null>(null);
-  
-  // NOVO: Flag para saber se o Supabase já respondeu a primeira vez
+  /** Flag que indica se o Supabase já respondeu ao menos uma vez */
   private _isAuthLoaded = signal<boolean>(false);
 
-  // 2. Públicos
+  /** Exposição read-only dos estados */
   public currentUser = this._currentUser.asReadonly();
   public session = this._session.asReadonly();
   public isAuthLoaded = this._isAuthLoaded.asReadonly();
 
-  // NOVO: Transformamos o signal em Observable para usar no Guard
+  /** Observable para uso em Guards (aguarda carregamento inicial) */
   public authLoaded$ = toObservable(this._isAuthLoaded);
 
   constructor() {
-    console.log('1. AuthService: Construtor iniciado. Esperando Supabase...');
-
     this.supabase.auth.onAuthStateChange((event, session) => {
-      console.log('2. AuthService: Supabase respondeu!', event); 
-      console.log('3. Sessão encontrada:', session ? 'SIM (Usuario Logado)' : 'NÃO (Null)');
-      
       this._session.set(session);
       this._currentUser.set(session?.user ?? null);
-      
-      this._isAuthLoaded.set(true); 
-      console.log('4. AuthService: Flag isAuthLoaded setada para TRUE');
+      this._isAuthLoaded.set(true);
     });
   }
 

@@ -5,6 +5,10 @@ import { Router } from '@angular/router';
 import { OrganizationService } from '../organization.service';
 import { ProfileService } from '../../../core/auth/profile.service';
 
+/**
+ * Componente para criação da primeira organização do usuário.
+ * Exibido após o cadastro inicial.
+ */
 @Component({
   selector: 'app-create-organization',
   standalone: true,
