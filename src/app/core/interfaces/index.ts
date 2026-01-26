@@ -6,3 +6,4 @@
 export * from './profile.interface';
 export * from './organization.interface';
 export * from './board.interface';
+export * from './error.interface';

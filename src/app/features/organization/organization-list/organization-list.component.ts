@@ -5,6 +5,7 @@ import { OrganizationService, Organization } from '../organization.service';
 import { ProfileService } from '../../../core/auth/profile.service';
 import { TopbarComponent } from '../../../shared/ui/topbar/topbar.component';
 import { NewOrgModalComponent } from '../../../shared/ui/new-org-modal/new-org-modal.component';
+import { getErrorMessage } from '../../../core/interfaces';
 
 /**
  * Componente que lista todas as organizações do usuário.
@@ -51,8 +52,8 @@ export class OrganizationListComponent implements OnInit {
       if (orgs.length === 0) {
         this.router.navigate(['/organizations/new']);
       }
-    } catch (error: any) {
-      this.errorMessage.set(error.message || 'Erro ao carregar organizações');
+    } catch (error: unknown) {
+      this.errorMessage.set(getErrorMessage(error));
     } finally {
       this.isLoading.set(false);
     }
@@ -71,8 +72,8 @@ export class OrganizationListComponent implements OnInit {
       await this.orgService.createOrganization(name);
       this.closeModal();
       await this.loadOrganizations();
-    } catch (error: any) {
-      console.error('Erro ao criar organização:', error);
+    } catch (error: unknown) {
+      console.error('Erro ao criar organização:', getErrorMessage(error));
     }
   }
 

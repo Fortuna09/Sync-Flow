@@ -152,11 +152,10 @@ export class CardService {
       return []; 
     }
     
-    // Mapear para adequar a estrutura se necessário, ou usar direto
-    return data as any[];
+    return data as Comment[];
   }
 
-  async addComment(cardId: number, content: string): Promise<any> {
+  async addComment(cardId: number, content: string): Promise<Comment> {
     const { data: { user } } = await this.supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
@@ -181,7 +180,7 @@ export class CardService {
       console.error('Erro ao adicionar comentário:', error);
       throw error;
     }
-    return data;
+    return data as Comment;
   }
 
   async deleteComment(commentId: number): Promise<void> {

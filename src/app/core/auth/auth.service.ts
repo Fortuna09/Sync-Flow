@@ -1,17 +1,23 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, AuthChangeEvent, Subscription } from '@supabase/supabase-js';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { SUPABASE_CLIENT } from '../tokens/supabase.token';
 
 /**
  * Serviço de autenticação responsável por gerenciar o estado do usuário.
  * Utiliza Signals para reatividade e integra com Supabase Auth.
+ * 
+ * Nota: Mesmo sendo providedIn: 'root' (singleton que vive durante toda a app),
+ * implementamos OnDestroy como boa prática para demonstrar gerenciamento de recursos.
  */
 @Injectable({ providedIn: 'root' })
-export class AuthService {
+export class AuthService implements OnDestroy {
   private supabase = inject(SUPABASE_CLIENT);
   private router = inject(Router);
+
+  /** Subscription do listener de autenticação do Supabase */
+  private authSubscription: Subscription | null = null;
 
   /** Estado interno do usuário atual */
   private _currentUser = signal<User | null>(null);
@@ -29,11 +35,30 @@ export class AuthService {
   public authLoaded$ = toObservable(this._isAuthLoaded);
 
   constructor() {
-    this.supabase.auth.onAuthStateChange((event, session) => {
-      this._session.set(session);
-      this._currentUser.set(session?.user ?? null);
-      this._isAuthLoaded.set(true);
-    });
+    this.initAuthListener();
+  }
+
+  /**
+   * Inicializa o listener de mudanças de estado de autenticação.
+   * Armazena a subscription para cleanup posterior.
+   */
+  private initAuthListener(): void {
+    const { data } = this.supabase.auth.onAuthStateChange(
+      (event: AuthChangeEvent, session: Session | null) => {
+        this._session.set(session);
+        this._currentUser.set(session?.user ?? null);
+        this._isAuthLoaded.set(true);
+      }
+    );
+    this.authSubscription = data.subscription;
+  }
+
+  /**
+   * Cleanup do listener de autenticação.
+   * Chamado automaticamente quando o serviço é destruído.
+   */
+  ngOnDestroy(): void {
+    this.authSubscription?.unsubscribe();
   }
 
   async signIn(email: string, pass: string) {

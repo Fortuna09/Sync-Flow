@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed, ElementRef } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ElementRef, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -15,6 +15,8 @@ import { TopbarComponent } from '../../../../shared/ui/topbar/topbar.component';
 /**
  * Componente principal de visualização e edição de um Board Kanban.
  * Gerencia listas, cards e operações de drag-and-drop.
+ * 
+ * Utiliza DestroyRef para cleanup automático de subscriptions futuras (ex: realtime).
  */
 @Component({
   selector: 'app-board-detail',
@@ -37,6 +39,12 @@ export class BoardDetailComponent implements OnInit {
   private cardService = inject(CardService);
   private orgService = inject(OrganizationService);
   private elementRef = inject(ElementRef);
+  
+  /** 
+   * DestroyRef para gerenciamento automático de subscriptions.
+   * Usar com takeUntilDestroyed(this.destroyRef) em observables.
+   */
+  private destroyRef = inject(DestroyRef);
 
   board = signal<Board | null>(null);
   lists = signal<List[]>([]);

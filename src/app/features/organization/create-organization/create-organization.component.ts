@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router } from '@angular/router';
 import { OrganizationService } from '../organization.service';
 import { ProfileService } from '../../../core/auth/profile.service';
+import { getErrorMessage } from '../../../core/interfaces';
 
 /**
  * Componente para criação da primeira organização do usuário.
@@ -49,8 +50,8 @@ export class CreateOrganizationComponent {
       
       // Redirecionar para a lista de organizações
       this.router.navigate(['/organizations']);
-    } catch (error: any) {
-      this.errorMessage = error.message || 'Erro ao criar organização. Tente novamente.';
+    } catch (error: unknown) {
+      this.errorMessage = getErrorMessage(error);
     } finally {
       this.isLoading = false;
     }

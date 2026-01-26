@@ -5,6 +5,16 @@ import { Board } from '../models/board.model';
 export { Board } from '../models/board.model';
 
 /**
+ * DTO para criação de um novo Board.
+ */
+interface CreateBoardPayload {
+  title: string;
+  bg_color: string;
+  user_id: string;
+  organization_id?: string;
+}
+
+/**
  * Serviço responsável por operações CRUD de Boards (quadros Kanban).
  * Interage com a tabela `boards` do Supabase.
  */
@@ -42,21 +52,17 @@ export class BoardService {
   }
 
   // 3. Criar um novo board dentro de uma organização
-  async createBoard(title: string, color: string = 'bg-blue-600', organizationId?: string) {
+  async createBoard(title: string, color: string = 'bg-blue-600', organizationId?: string): Promise<Board> {
     // Pega o usuário atual para garantir a autoria
     const { data: { user } } = await this.supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
-    const insertData: any = {
+    const insertData: CreateBoardPayload = {
       title,
       bg_color: color,
-      user_id: user.id
+      user_id: user.id,
+      ...(organizationId && { organization_id: organizationId })
     };
-
-    // Adicionar organization_id se fornecido
-    if (organizationId) {
-      insertData.organization_id = organizationId;
-    }
 
     const { data, error } = await this.supabase
       .from('boards')

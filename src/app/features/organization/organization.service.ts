@@ -6,6 +6,13 @@ import { Organization, OrganizationMember } from '../../core/interfaces';
 export { Organization, OrganizationMember } from '../../core/interfaces';
 
 /**
+ * Tipo para o retorno do join do Supabase (organization_members -> organizations).
+ */
+interface OrganizationMemberWithOrg {
+  organization: Organization;
+}
+
+/**
  * Serviço responsável por gerenciar organizações (workspaces/times).
  * Interage com as tabelas `organizations` e `organization_members` do Supabase.
  */
@@ -33,8 +40,9 @@ export class OrganizationService {
 
     if (error) throw error;
     
-    // Extrair organizations do resultado
-    return data?.map((item: any) => item.organization) || [];
+    // Extrair organizations do resultado - cast para tipagem do join do Supabase
+    const typedData = data as unknown as OrganizationMemberWithOrg[];
+    return typedData?.map(item => item.organization) || [];
   }
 
   // Criar nova organização

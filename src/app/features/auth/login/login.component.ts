@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
+import { getErrorMessage } from '../../../core/interfaces';
 
 /**
  * Componente de login.
@@ -35,7 +36,7 @@ export class LoginComponent {
     try {
       await this.authService.signIn(email!, password!);
       // O redirect acontece no Service
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.handleError(error);
     }
   }
@@ -52,7 +53,7 @@ export class LoginComponent {
     try {
       await this.authService.signUp(email!, password!);
       this.errorMessage.set('Conta criada! Entrando...');
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.handleError(error);
     }
   }
@@ -63,9 +64,9 @@ export class LoginComponent {
     this.errorMessage.set('');
   }
 
-  private handleError(error: any) {
+  private handleError(error: unknown) {
     this.isLoading.set(false);
-    this.errorMessage.set(error.message || 'Erro desconhecido');
+    this.errorMessage.set(getErrorMessage(error));
     console.error(error);
   }
 }
