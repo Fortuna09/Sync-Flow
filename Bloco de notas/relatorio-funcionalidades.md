@@ -39,7 +39,7 @@ src/app/
 | `ngOnDestroy()` | Cleanup do listener | Evita memory leak removendo subscription do Supabase |
 
 **Decisões:**
-- **Signals vs BehaviorSubject:** Optou-se por Signals (Angular 16+) por serem mais performáticos e com sintaxe mais limpa
+- **Signals vs BehaviorSubject:** Optei por Signals (Angular 16+) por serem mais performáticos e com sintaxe mais limpa
 - **`toObservable()`:** Converte Signal para Observable apenas quando necessário (guards RxJS)
 - **Estado read-only:** `currentUser`, `session`, `isAuthLoaded` são expostos como readonly para encapsulamento
 
@@ -108,7 +108,7 @@ export const authGuard: CanActivateFn = () => {
 | `createOrganization(name)` | Cria nova organização | Chama service e recarrega lista |
 | `enterOrganization(org)` | Seleciona organização | Salva no localStorage e navega para boards |
 
-**Decisão:** LocalStorage para persistir organização selecionada entre sessões. Alternativa seria usar um service com estado global.
+**Decisão:** LocalStorage para persistir organização selecionada entre sessões. 
 
 ---
 
@@ -118,7 +118,7 @@ export const authGuard: CanActivateFn = () => {
 |--------|-----------|-------------------|
 | `onSubmit()` | Submete formulário | Cria organização pessoal + marca flag no perfil |
 
-**Lógica de Negócio:** Primeira organização é sempre `is_personal = true`. Isso diferencia workspace pessoal de times/empresas.
+**Lógica de Negócio:** Primeira organização é sempre `is_personal = true`. Isso diferencia workspace pessoal de times.
 
 ---
 
@@ -132,7 +132,7 @@ export const authGuard: CanActivateFn = () => {
 | `getBoards()` | Lista todos os boards (legacy) | Mantido para compatibilidade |
 | `createBoard(title, color, orgId?)` | Cria novo board | Associa ao `user_id` e opcionalmente à organização |
 
-**Decisão:** Cores são salvas como classes Tailwind (`bg-blue-600`) ao invés de hex. Facilita consistência visual.
+
 
 ---
 
@@ -146,7 +146,6 @@ export const authGuard: CanActivateFn = () => {
 | `deleteList(id)` | Exclui lista | Cards são excluídos em cascata (FK no banco) |
 | `reorderLists(lists)` | Reordena em batch | `Promise.all()` para múltiplos updates |
 
-**Lógica de Negócio:** Campo `position` (integer) controla a ordem. Ao criar, busca a maior posição existente e soma 1.
 
 ---
 
@@ -159,14 +158,14 @@ export const authGuard: CanActivateFn = () => {
 | `updateCard(id, dto)` | Atualiza conteúdo/descrição | Aceita partial updates |
 | `deleteCard(id)` | Exclui card | Comentários excluídos em cascata |
 | `moveCard(cardId, newListId, newPosition)` | Move entre listas | Atualiza `list_id` e `position` |
-| `reorderCards(cards)` | Reordena em batch | Usado após drag & drop |
+| `reorderCards(cards)` | Reordena | Usado após drag & drop |
 | `getComments(cardId)` | Lista comentários | JOIN com `profiles` para nome do autor |
 | `addComment(cardId, content)` | Adiciona comentário | Associa ao `user_id` logado |
 | `deleteComment(commentId)` | Exclui comentário | Sem soft delete |
 
 **Lógica de Negócio:** 
 - Cards usam `content` para título (campo obrigatório) e `description` para detalhes (opcional)
-- Comentários fazem JOIN com `profiles` para exibir nome do autor
+- Comentários fazem JOIN com tabela `profiles` para exibir nome do autor
 
 ---
 
@@ -181,7 +180,7 @@ export const authGuard: CanActivateFn = () => {
 | `getBoardGradient(bgColor)` | Converte classe Tailwind para CSS | Mapeia `bg-blue-600` → `linear-gradient(...)` |
 | `createTestBoard()` | Cria board de teste | Cor aleatória entre 5 opções |
 
-**Decisão:** Gradientes são gerados via mapeamento para evitar usar classes dinâmicas (purge do Tailwind não funciona com classes dinâmicas).
+
 
 ---
 
@@ -208,23 +207,6 @@ export const authGuard: CanActivateFn = () => {
 | `onCardDropped(event)` | Handler do CDK D&D | Diferencia mesma lista vs entre listas |
 | `persistCardPositions(cards, listId)` | Persiste posições | Batch update via `reorderCards()` |
 
-**Decisões Críticas:**
-
-1. **Optimistic Update:** UI atualiza imediatamente, persistência é async
-   ```typescript
-   this.lists.update(current => ...); // UI instantânea
-   await this.persistCardPositions(...); // Backend depois
-   ```
-
-2. **Computed Signals:** `connectedListIds` e `selectedCardListName` são derivados automaticamente
-   ```typescript
-   connectedListIds = computed(() => this.lists().map(list => 'list-' + list.id));
-   ```
-
-3. **DestroyRef:** Preparado para subscriptions futuras (realtime)
-   ```typescript
-   private destroyRef = inject(DestroyRef);
-   ```
 
 ---
 
@@ -240,7 +222,7 @@ export const authGuard: CanActivateFn = () => {
 | `addCard()` | Cria card | Emite evento para o pai |
 | `onFormFocusOut(event)` | Detecta clique fora | Fecha formulário se clicou fora |
 
-**Padrão de Comunicação:** Componente "burro" (presentational) - apenas emite eventos, não faz chamadas HTTP. O pai (`BoardDetailComponent`) gerencia o estado.
+**Padrão de Comunicação:** Componente "burro" - apenas emite eventos, não faz chamadas HTTP. O pai (`BoardDetailComponent`) gerencia o estado.
 
 ---
 
@@ -251,7 +233,6 @@ export const authGuard: CanActivateFn = () => {
 | `onCardClick()` | Abre modal de edição | Emite evento `edit` |
 | `onDelete(event)` | Exclui card | `stopPropagation()` evita abrir modal |
 
-**Decisão:** `stopPropagation()` no botão de excluir evita que o clique propague para o card e abra o modal indesejavelmente.
 
 ---
 
@@ -315,7 +296,7 @@ export const authGuard: CanActivateFn = () => {
 interface Board {
   id: number;
   title: string;
-  bg_color: string;           // Classe Tailwind (ex: 'bg-blue-600')
+  bg_color: string;           
   created_at?: string;
   user_id?: string;           // Criador
   organization_id: string;    // Organização dona
@@ -365,9 +346,9 @@ interface Comment {
 ### **Organization**
 ```typescript
 interface Organization {
-  id: string;                 // UUID
+  id: string;                 
   name: string;
-  slug: string;               // URL-friendly
+  slug: string;               
   is_personal: boolean;       // Workspace pessoal vs time
   created_at: string;
 }
@@ -413,9 +394,7 @@ interface Profile {
    ↓
 3. Redirecionado para /organizations/new
    ↓
-4. Cria primeira organização (CreateOrganizationComponent)
-   - OrganizationService.createOrganization(name, isPersonal=true)
-   - ProfileService.markOrgCreated()
+4. Cria primeira organização 
    ↓
 5. Redirecionado para /organizations
    ↓
@@ -430,23 +409,21 @@ interface Profile {
 |--------|------------------------------|
 | **Auth** | Login, Registro, Logout, Proteção de rotas, Gerenciamento de sessão |
 | **Perfil** | Exibição de nome/iniciais, Flag de onboarding |
-| **Organizações** | CRUD, Multi-tenant, Slug único, Roles (owner) |
-| **Boards** | CRUD, Cores customizadas, Associação a organizações |
+| **Organizações** | CRUD, Slug único, Roles (owner) |
+| **Boards** | CRUD, Associação a organizações |
 | **Listas** | CRUD, Ordenação por posição, Inline edit |
-| **Cards** | CRUD, Descrição, Posição, Drag & Drop entre listas |
+| **Cards** | CRUD, Descrição, Posição, Drag & Drop entre listas, Comentários |
 | **Comentários** | CRUD, Autor com JOIN de perfil |
-| **UX** | Optimistic updates, Inline editing, Modais, Confirmações |
-
 ---
 
 ## DECISÕES TÉCNICAS IMPORTANTES
 
 ### 1. **Standalone Components**
-Todos os componentes são standalone (Angular 17+). Elimina necessidade de NgModules.
+Todos os componentes são standalone (Angular 17+). 
 
 ### 2. **Signals vs RxJS**
 - **Signals:** Estado local de componentes e services
-- **RxJS:** Apenas onde necessário (guards, operadores complexos)
+- **RxJS:** Guards, operadores complexos
 
 ### 3. **InjectionToken para Supabase**
 Desacopla cliente do código, facilita testes e mocking.
@@ -465,5 +442,5 @@ Interfaces para todas as entidades, eliminação de `any`.
 
 ---
 
-###### ... Desenvolvimentos futuros
+###### ... Em desenvolvimento
 

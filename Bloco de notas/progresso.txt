@@ -1,4 +1,5 @@
-PLANO - Angular(modules)/Supabase - ci/cd(github actions)
+PLANO - Angular/Supabase - ci/cd(github actions)
+arquitetura Component-Based + Feature Modules
 
 Fase 1 - Estrutura de Cadastro
 Verificar tabela de usuários no Supabase (nome, sobrenome, email, senha)
@@ -40,6 +41,7 @@ PENDENTE PARA O FINAL DO PROJETO:
 - Opção para aparecer um board com apenas as suas tasks
 - Metodo de pagamento
 - Enviar solicitação por email
+- tela de perfil do usuário (editar nome, sobrenome, foto de perfil)    
 
 CORES
 
