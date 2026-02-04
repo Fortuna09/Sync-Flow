@@ -1,7 +1,7 @@
 {
     "titulo": "SyncFlow - Plataforma SaaS de Gestão de Projetos (MVP)",
     "objetivo": "Desenvolver uma arquitetura Fullstack Serverless escalável para gestão de tarefas (estilo Kanban), focando em performance reativa e isolamento de dados (Multi-tenancy). Obs: Projeto em produção contínua, recebendo novas features incrementalmente via pipeline de CI/CD.",
-    "desafio": "Implementar um sistema de aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa segurança robusto utilizando Row Level Security (RLS) no PostgreSQL para garantir privacidade total entre usuários, além de modernizar o gerenciamento de estado no Front-end substituindo Zone.js por Angular Signals.",
+    "desafio": "Implementar um sistema de segurança robusto utilizando Row Level Security (RLS) no PostgreSQL para garantir privacidade total entre usuários, além de modernizar o gerenciamento de estado no Front-end substituindo Zone.js por Angular Signals.",
     "tecnologia": "Angular 17+, TypeScript, Supabase (Auth/DB), TailwindCSS, Vercel, GitHub Actions",
     "imagem": "/pub.png",
     "linkRepo": "https://github.com/Fortuna09/sync-flow",
