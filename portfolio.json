@@ -4,7 +4,5 @@
     "desafio": "Implementar um sistema de segurança robusto utilizando Row Level Security (RLS) no PostgreSQL para garantir privacidade total entre usuários, além de modernizar o gerenciamento de estado no Front-end substituindo Zone.js por Angular Signals.",
     "tecnologia": "Angular 17+, TypeScript, Supabase (Auth/DB), TailwindCSS, Vercel, GitHub Actions",
     "imagem": "/pub.png",
-    "linkRepo": "https://github.com/Fortuna09/sync-flow",
-    "linkDemo": "https://sync-flow-xi.vercel.app/",
     "tags": ["Angular", "SaaS", "Supabase", "Architecture", "DevOps"]
 }
