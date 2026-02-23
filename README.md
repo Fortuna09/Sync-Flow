@@ -52,3 +52,5 @@ O projeto conta com um pipeline de **Integração Contínua** configurado no Git
    ```bash
    git clone [https://github.com/SEU-USUARIO/sync-flow.git](https://github.com/SEU-USUARIO/sync-flow.git)
    cd sync-flow
+
+   ...
