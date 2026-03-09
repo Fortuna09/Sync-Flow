@@ -46,11 +46,3 @@ O projeto conta com um pipeline de **Integração Contínua** configurado no Git
 - [x] **Interface Dinâmica:** Feedback visual de carregamento e estados vazios.
 - [x] **Rotas Protegidas:** Redirecionamento automático de usuários não autenticados.
 
-## Como Rodar Localmente
-
-1. **Clone o repositório:**
-   ```bash
-   git clone [https://github.com/SEU-USUARIO/sync-flow.git](https://github.com/SEU-USUARIO/sync-flow.git)
-   cd sync-flow
-
-   ...
