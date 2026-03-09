@@ -1,6 +1,6 @@
 name: CI SyncFlow (Angular)
 
-# Quando isso vai rodar?
+#Roda quando der push ou pull request para a branch master
 on:
   push:
     branches: [ "master" ]
@@ -12,26 +12,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Baixa o código do repositório
+    #Baixa o código do repositório
     - name: Checkout do código
       uses: actions/checkout@v4
 
-    # 2. Prepara o Node.js (Ambiente)
+    #Prepara o Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
 
-    # 3. Instala dependências (npm ci é mais rápido e seguro que npm install para CI)
+    #Instala dependências
     - name: Instalar Dependências
       run: npm ci
 
-    # 4. Verifica se o código compila (Build de Produção)
-    # Isso pega erros de TypeScript que o VS Code as vezes deixa passar
+    #Verifica se o código compila
     - name: Verificar Build (Produção)
       run: npm run build -- --configuration production
       
-    # DICA DE SENIOR:
-    # Futuramente adicionaremos 'npm run test' aqui. 
-    # Por enquanto, garantimos apenas que o app não está quebrado (Buildavel).
+    # Futuramente 'npm run test' aqui. 
