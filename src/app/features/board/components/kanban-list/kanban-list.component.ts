@@ -6,8 +6,8 @@ import { List, Card } from '../../models/board.model';
 import { KanbanCardComponent } from '../kanban-card/kanban-card.component';
 
 /**
- * Componente que representa uma coluna/lista no quadro Kanban.
- * Gerencia a adição de cards e emite eventos de drag-and-drop.
+ * Componente que representa uma coluna/lista no quadro Kanban
+ * Gerencia a adição de cards e emite eventos de drag-and-drop
  */
 @Component({
   selector: 'app-kanban-list',
@@ -74,7 +74,7 @@ export class KanbanListComponent {
   startAddCard() {
     this.newCardTitle = '';
     this.isAddingCard.set(true);
-    // Pequeno delay para permitir que o DOM atualize e o input apareça para focar se necessário
+    // Pequeno delay para permitir que o DOM atualize
     setTimeout(() => {
       const input = this.elementRef.nativeElement.querySelector('textarea');
       if (input) input.focus();
@@ -85,7 +85,7 @@ export class KanbanListComponent {
     if (this.newCardTitle.trim()) {
       this.addCardEvent.emit({ listId: this.list.id, title: this.newCardTitle.trim() });
       this.newCardTitle = '';
-      this.isAddingCard.set(false); // Fecha o formulário
+      this.isAddingCard.set(false); //fecha o formulário
     }
   }
 
@@ -100,13 +100,13 @@ export class KanbanListComponent {
     const formElement = event.currentTarget as HTMLElement;
     const relatedTarget = event.relatedTarget as HTMLElement;
     
-    // Se o elemento clicado (relatedTarget) não faz parte do formulário, fecha
+    // Se o elemento clicado não faz parte do formulário fecha
     if (!formElement.contains(relatedTarget)) {
       this.cancelAddCard();
     }
   }
 
-  // Card actions
+  // Card ações
   onEditCard(card: Card) {
     this.editCard.emit(card);
   }

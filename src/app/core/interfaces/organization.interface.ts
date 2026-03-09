@@ -1,6 +1,6 @@
 /**
- * Interface que representa uma Organização (workspace/time).
- * Espelha a tabela `organizations` do Supabase.
+ * Interface que representa uma Organização (workspace/time)
+ * Espelha a tabela organizations do Supabase
  */
 export interface Organization {
   id: string;
@@ -11,8 +11,8 @@ export interface Organization {
 }
 
 /**
- * Interface que representa a relação entre usuário e organização.
- * Espelha a tabela `organization_members` do Supabase.
+ * Interface que representa a relação entre usuário e organização
+ * Espelha a tabela organization_members do Supabase
  */
 export interface OrganizationMember {
   id: string;
@@ -23,6 +23,6 @@ export interface OrganizationMember {
 }
 
 /**
- * Papéis disponíveis dentro de uma organização (RBAC).
+ * Papeis disponíveis dentro de uma organização
  */
 export type OrganizationRole = 'owner' | 'admin' | 'member' | 'viewer';

@@ -6,8 +6,8 @@ import { Profile } from '../interfaces';
 export { Profile } from '../interfaces';
 
 /**
- * Serviço responsável por gerenciar o perfil do usuário autenticado.
- * Interage com a tabela `profiles` do Supabase.
+ * Serviço responsável por gerenciar o perfil do usuário autenticado
+ * Interage com a tabela profiles do Supabase
  */
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
@@ -41,20 +41,20 @@ export class ProfileService {
       .single();
 
     if (error) {
-      // console.error(`Erro ao buscar profile do user ${userId}:`, error); // Optional logging
+      // console.error(`Erro ao buscar profile do user ${userId}:`, error);
       return null;
     }
     
     return data;
   }
 
-  // Verificar se usuário já criou organização
+  // Verifica se usuário já criou organização
   async hasCreatedOrg(): Promise<boolean> {
     const profile = await this.getMyProfile();
     return profile?.has_created_org ?? false;
   }
 
-  // Marcar que usuário criou primeira organização
+  // Marca que usuário criou primeira organização
   async markOrgCreated(): Promise<void> {
     const { data: { user } } = await this.supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');

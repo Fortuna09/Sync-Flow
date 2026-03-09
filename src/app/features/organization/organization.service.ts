@@ -6,15 +6,15 @@ import { Organization, OrganizationMember } from '../../core/interfaces';
 export { Organization, OrganizationMember } from '../../core/interfaces';
 
 /**
- * Tipo para o retorno do join do Supabase (organization_members -> organizations).
+ * Tipo para o retorno do join do Supabase organization_members -> organizations
  */
 interface OrganizationMemberWithOrg {
   organization: Organization;
 }
 
 /**
- * Serviço responsável por gerenciar organizações (workspaces/times).
- * Interage com as tabelas `organizations` e `organization_members` do Supabase.
+ * Serviço responsável por gerenciar organizações
+ * Interage com as tabelas organizations e organization_members do Supabase
  */
 @Injectable({ providedIn: 'root' })
 export class OrganizationService {
@@ -52,7 +52,7 @@ export class OrganizationService {
 
     const slug = this.generateSlug(name);
 
-    // 1. Criar a organização
+    //Criar a organização
     const { data: org, error: orgError } = await this.supabase
       .from('organizations')
       .insert({ name, slug, is_personal: isPersonal })
@@ -61,7 +61,7 @@ export class OrganizationService {
 
     if (orgError) throw orgError;
 
-    // 2. Adicionar o usuário como owner
+    //Adicionar o usuário como owner
     const { error: memberError } = await this.supabase
       .from('organization_members')
       .insert({
@@ -110,8 +110,8 @@ export class OrganizationService {
     return name
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-      .replace(/[^a-z0-9]+/g, '-')     // Substitui caracteres especiais por -
-      .replace(/^-|-$/g, '');           // Remove - do início e fim
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
   }
 }

@@ -13,10 +13,9 @@ import { CardModalComponent } from '../../components/card-modal/card-modal.compo
 import { TopbarComponent } from '../../../../shared/ui/topbar/topbar.component';
 
 /**
- * Componente principal de visualização e edição de um Board Kanban.
- * Gerencia listas, cards e operações de drag-and-drop.
+ * Componente principal de visualização e edição de um Board
+ * Gerencia listas, cards e operações de drag-and-drop
  * 
- * Utiliza DestroyRef para cleanup automático de subscriptions futuras (ex: realtime).
  */
 @Component({
   selector: 'app-board-detail',
@@ -41,8 +40,8 @@ export class BoardDetailComponent implements OnInit {
   private elementRef = inject(ElementRef);
   
   /** 
-   * DestroyRef para gerenciamento automático de subscriptions.
-   * Usar com takeUntilDestroyed(this.destroyRef) em observables.
+   * DestroyRef para gerenciamento automático de subscriptions
+   * Usar com takeUntilDestroyed em observables
    */
   private destroyRef = inject(DestroyRef);
 
@@ -54,7 +53,7 @@ export class BoardDetailComponent implements OnInit {
   orgSlug = signal('');
   selectedCard = signal<Card | null>(null);
 
-  // Computed helper para pegar nome da lista do cartão selecionado
+  // Pega nome da lista do cartão selecionado
   selectedCardListName = computed(() => {
     const card = this.selectedCard();
     if (!card) return '';
@@ -112,11 +111,9 @@ export class BoardDetailComponent implements OnInit {
   }
 
   // === CRUD de Listas ===
-  
   startAddList() {
     this.newListTitle = '';
     this.isAddingList.set(true);
-    // Focar no input
     setTimeout(() => {
       const input = this.elementRef.nativeElement.querySelector('input[placeholder="Nome da lista..."]');
       if (input) input.focus();
@@ -149,7 +146,7 @@ export class BoardDetailComponent implements OnInit {
       
       this.lists.update(current => [...current, newList]);
       this.newListTitle = '';
-      this.isAddingList.set(false); // Fecha o formulário
+      this.isAddingList.set(false);
     } catch (error) {
       console.error('Erro ao criar lista:', error);
       alert('Erro ao criar lista');
@@ -180,7 +177,6 @@ export class BoardDetailComponent implements OnInit {
   }
 
   // === CRUD de Cards ===
-  
   async onAddCard(event: { listId: number; title: string }) {
     try {
       const newCard = await this.cardService.createCard({
@@ -264,7 +260,6 @@ export class BoardDetailComponent implements OnInit {
   }
 
   // === Drag & Drop ===
-  
   async onCardDropped(event: CdkDragDrop<Card[]>) {
     const prevListId = this.getListIdFromContainerId(event.previousContainer.id);
     const currListId = this.getListIdFromContainerId(event.container.id);
@@ -281,11 +276,11 @@ export class BoardDetailComponent implements OnInit {
           current.map(l => l.id === currListId ? { ...l, cards } : l)
         );
         
-        // Persiste no banco
+        //Persiste no banco
         await this.persistCardPositions(cards, currListId);
       }
     } else {
-      // Movendo entre listas
+      //Movendo entre listas
       const prevList = this.lists().find(l => l.id === prevListId);
       const currList = this.lists().find(l => l.id === currListId);
       
@@ -295,7 +290,7 @@ export class BoardDetailComponent implements OnInit {
         
         transferArrayItem(prevCards, currCards, event.previousIndex, event.currentIndex);
         
-        // Atualiza UI imediatamente
+        //Atualiza UI imediatamente
         this.lists.update(current => 
           current.map(l => {
             if (l.id === prevListId) return { ...l, cards: prevCards };
@@ -304,7 +299,7 @@ export class BoardDetailComponent implements OnInit {
           })
         );
         
-        // Persiste no banco
+        //Persiste no banco
         await Promise.all([
           this.persistCardPositions(prevCards, prevListId),
           this.persistCardPositions(currCards, currListId)

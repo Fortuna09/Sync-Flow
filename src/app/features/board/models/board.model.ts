@@ -1,6 +1,6 @@
 /**
- * Re-exporta todas as interfaces de Board do core.
- * Mantém compatibilidade com imports existentes no módulo Board.
+ * Re-exporta todas as interfaces de Board do core
+ * Mantém compatibilidade com imports existentes no módulo Board
  */
 export {
   Board,

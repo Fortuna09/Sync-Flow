@@ -9,8 +9,8 @@ import { NewOrgModalComponent } from '../../../shared/ui/new-org-modal/new-org-m
 import { getErrorMessage } from '../../../core/interfaces';
 
 /**
- * Componente que lista todas as organizações do usuário.
- * Redireciona para criação se o usuário ainda não possui nenhuma.
+ * Componente que lista todas as organizações do usuário
+ * Redireciona para criação se o usuário ainda não possui nenhuma
  */
 @Component({
   selector: 'app-organization-list',
@@ -31,7 +31,7 @@ export class OrganizationListComponent implements OnInit {
   isModalOpen = signal(false);
 
   async ngOnInit(){
-    // Primeiro verifica se usuário já criou org
+    // Primeiro verifica se usuário já criou uma org
     const hasCreatedOrg = await this.profileService.hasCreatedOrg();
     
     if (!hasCreatedOrg) {
@@ -50,7 +50,7 @@ export class OrganizationListComponent implements OnInit {
       const orgs = await this.orgService.getMyOrganizations();
       this.organizations.set(orgs);
       
-      // Se não tem organização (foi removido de todas), redireciona para criar
+      // Se não tem organização (caso tenha saido ou apagado todas), redireciona para criar
       if (orgs.length === 0) {
         this.router.navigate(['/organizations/new']);
       }
@@ -80,7 +80,7 @@ export class OrganizationListComponent implements OnInit {
   }
 
   enterOrganization(org: Organization): void {
-    // Salvar org no serviço de contexto (com Signals e persistência)
+    // Salvar org no serviço de contexto (com signals e persistência)
     this.orgContext.setCurrentOrganization(org);
     
     // Navegar para os boards da organização

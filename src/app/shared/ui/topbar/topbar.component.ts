@@ -5,8 +5,8 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ProfileService, Profile } from '../../../core/auth/profile.service';
 
 /**
- * Componente de barra superior (header) da aplicação.
- * Exibe informações do usuário logado e menu de ações.
+ * Componente de barra superior (header) da aplicação
+ * Exibe informações do usuário logado e menu de ações
  */
 @Component({
   selector: 'app-topbar',
@@ -37,11 +37,9 @@ export class TopbarComponent implements OnInit {
       const firstName = profile.first_name || '';
       const lastName = profile.last_name || '';
       
-      // Gerar iniciais (primeira letra de cada nome)
       const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase() || 'U';
       this.userInitials.set(initials);
       
-      // Nome completo
       const fullName = [firstName, lastName].filter(Boolean).join(' ');
       this.userName.set(fullName || 'Usuário');
     }
@@ -57,13 +55,13 @@ export class TopbarComponent implements OnInit {
 
   goToProfile(): void {
     this.closeMenu();
-    // TODO: Implementar tela de perfil
+    //TODO: Implementar tela de perfil
     console.log('Ir para perfil');
   }
 
   goToSettings(): void {
     this.closeMenu();
-    // TODO: Implementar tela de configurações
+    //TODO: Implementar tela de configurações
     console.log('Ir para configurações');
   }
 

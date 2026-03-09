@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 /**
- * Modal reutilizável para criação de novas organizações.
- * Utiliza a nova API de Signals (input/output).
+ * Modal reutilizável para criação de novas organizações
+ * Utiliza a nova API de Signals (input/output)
  */
 @Component({
   selector: 'app-new-org-modal',
@@ -42,7 +42,7 @@ export class NewOrgModalComponent {
     this.onCreate.emit(this.orgForm.value.name);
   }
 
-  // Placeholder para funcionalidade futura
+  //futuro...
   joinOrganization(): void {
     console.log('Entrar em organização existente');
   }

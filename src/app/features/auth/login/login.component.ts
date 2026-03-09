@@ -7,7 +7,7 @@ import { getErrorMessage } from '../../../core/interfaces';
 
 /**
  * Componente de login.
- * Utiliza Reactive Forms para validação e Signals para estado de UI.
+ *Utiliza Reactive Forms para validação e Signals para estado de UI
  */
 @Component({
   selector: 'app-login',

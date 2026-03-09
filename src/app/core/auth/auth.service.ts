@@ -5,11 +5,8 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { SUPABASE_CLIENT } from '../tokens/supabase.token';
 
 /**
- * Serviço de autenticação responsável por gerenciar o estado do usuário.
- * Utiliza Signals para reatividade e integra com Supabase Auth.
- * 
- * Nota: Mesmo sendo providedIn: 'root' (singleton que vive durante toda a app),
- * implementamos OnDestroy como boa prática para demonstrar gerenciamento de recursos.
+ * Serviço de autenticação responsável por gerenciar o estado do usuário
+ * Utiliza Signals para reatividade e integra com Supabase Auth
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService implements OnDestroy {
@@ -23,15 +20,14 @@ export class AuthService implements OnDestroy {
   private _currentUser = signal<User | null>(null);
   /** Estado interno da sessão */
   private _session = signal<Session | null>(null);
-  /** Flag que indica se o Supabase já respondeu ao menos uma vez */
+  /** Flag que indica se o Supabase já respondeu */
   private _isAuthLoaded = signal<boolean>(false);
 
-  /** Exposição read-only dos estados */
   public currentUser = this._currentUser.asReadonly();
   public session = this._session.asReadonly();
   public isAuthLoaded = this._isAuthLoaded.asReadonly();
 
-  /** Observable para uso em Guards (aguarda carregamento inicial) */
+  /** Observable para uso em Guards (carregamento inicial) */
   public authLoaded$ = toObservable(this._isAuthLoaded);
 
   constructor() {
@@ -39,8 +35,7 @@ export class AuthService implements OnDestroy {
   }
 
   /**
-   * Inicializa o listener de mudanças de estado de autenticação.
-   * Armazena a subscription para cleanup posterior.
+   * Inicializa o listener de mudanças de estado de autenticação
    */
   private initAuthListener(): void {
     const { data } = this.supabase.auth.onAuthStateChange(
@@ -53,10 +48,7 @@ export class AuthService implements OnDestroy {
     this.authSubscription = data.subscription;
   }
 
-  /**
-   * Cleanup do listener de autenticação.
-   * Chamado automaticamente quando o serviço é destruído.
-   */
+
   ngOnDestroy(): void {
     this.authSubscription?.unsubscribe();
   }
@@ -67,7 +59,6 @@ export class AuthService implements OnDestroy {
       password: pass,
     });
     if (error) throw error;
-    // Redireciona para organizações (lista ou criar se não tiver)
     this.router.navigate(['/organizations']);
   }
 

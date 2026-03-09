@@ -4,8 +4,8 @@ import { LoggerService } from '../../../core/services/logger.service';
 import { List, CreateListDto, UpdateListDto } from '../models/board.model';
 
 /**
- * Serviço responsável por operações CRUD de Listas dentro de um Board.
- * Interage com a tabela `lists` do Supabase.
+ * Serviço responsável por operações CRUD de Listas dentro de um Board
+ * Interage com a tabela lists do Supabase
  */
 @Injectable({ providedIn: 'root' })
 export class ListService {
@@ -32,9 +32,7 @@ export class ListService {
     }));
   }
 
-  /**
-   * Criar uma nova lista
-   */
+  //Criar uma nova lista
   async createList(dto: CreateListDto): Promise<List> {
     // Buscar a maior posição atual para colocar no final
     const { data: existing } = await this.supabase
@@ -85,9 +83,8 @@ export class ListService {
     return data as List;
   }
 
-  /**
-   * Excluir uma lista (cards são excluídos em cascata)
-   */
+  
+   // Excluir uma lista (cards são excluídos em cascata
   async deleteList(id: number): Promise<void> {
     const { error } = await this.supabase
       .from('lists')

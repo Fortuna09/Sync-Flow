@@ -1,6 +1,6 @@
 /**
- * Interface que representa o perfil de um usuário no sistema.
- * Espelha a tabela `profiles` do Supabase (extensão de auth.users).
+ * Interface que representa o perfil de um usuário no sistema
+ * Espelha a tabela profiles do Supabase 
  */
 export interface Profile {
   id: string;

@@ -1,6 +1,6 @@
 /**
  * Interface que representa um Quadro (Board) Kanban.
- * Espelha a tabela `boards` do Supabase.
+ * Espelha a tabela boards do Supabase.
  */
 export interface Board {
   id: number;
@@ -13,7 +13,7 @@ export interface Board {
 
 /**
  * Interface que representa uma Lista dentro de um Board.
- * Espelha a tabela `lists` do Supabase.
+ * Espelha a tabela lists do Supabase.
  */
 export interface List {
   id: number;
@@ -27,7 +27,7 @@ export interface List {
 
 /**
  * Interface que representa um Card (tarefa) dentro de uma Lista.
- * Espelha a tabela `cards` do Supabase.
+ * Espelha a tabela cards do Supabase.
  */
 export interface Card {
   id: number;
@@ -42,7 +42,7 @@ export interface Card {
 
 /**
  * Interface que representa um Comentário em um Card.
- * Espelha a tabela `comments` do Supabase.
+ * Espelha a tabela comments do Supabase.
  */
 export interface Comment {
   id: number;

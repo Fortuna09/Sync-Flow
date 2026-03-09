@@ -8,8 +8,8 @@ import { OrganizationService, Organization } from '../organization/organization.
 type TabType = 'boards' | 'members';
 
 /**
- * Componente de listagem de boards de uma organização.
- * Permite visualizar e criar novos quadros Kanban.
+ * Componente de listagem de boards de uma organização
+ * Permite visualizar e criar novos quadros
  */
 @Component({
   selector: 'app-board',
@@ -23,7 +23,7 @@ export class BoardComponent implements OnInit {
   private orgService = inject(OrganizationService);
   private route = inject(ActivatedRoute);
 
-  // Estados Reativos (Signals)
+  //Signals
   boards = signal<Board[]>([]);
   isLoading = signal(true);
   activeTab = signal<TabType>('boards');
@@ -32,12 +32,12 @@ export class BoardComponent implements OnInit {
   organizationSlug = signal('');
 
   async ngOnInit() {
-    // Pegar slug da organização da rota
+    //pegar slug da organização da rota
     const slug = this.route.snapshot.paramMap.get('orgSlug');
     if (slug) {
       this.organizationSlug.set(slug);
       
-      // Buscar organização pelo slug
+      //Buscar organização pelo slug
       await this.loadOrganization(slug);
     }
   }
@@ -48,7 +48,7 @@ export class BoardComponent implements OnInit {
       if (org) {
         this.organization.set(org);
         this.organizationName.set(org.name);
-        // Carregar boards da organização
+        // Carrega boards da organização
         await this.loadBoards();
       } else {
         console.error('Organização não encontrada');
@@ -81,7 +81,7 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  // Mapear classes Tailwind para gradientes CSS
+  //mapear classes Tailwind para gradientes CSS
   getBoardGradient(bgColor: string): string {
     const colorMap: Record<string, string> = {
       'bg-blue-600': 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
@@ -94,7 +94,9 @@ export class BoardComponent implements OnInit {
     return colorMap[bgColor] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
   }
 
-  // Criar novo quadro
+  /** 
+   * Criar novo quadro
+   * */ 
   async createTestBoard(): Promise<void> {
     const org = this.organization();
     if (!org) {
@@ -105,7 +107,7 @@ export class BoardComponent implements OnInit {
     const title = prompt('Qual o nome do quadro?');
     if (!title) return;
 
-    // Cores aleatórias
+    //Cores aleatórias
     const colors = ['bg-blue-600', 'bg-emerald-600', 'bg-purple-600', 'bg-rose-600', 'bg-amber-500'];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
 

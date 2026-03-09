@@ -7,7 +7,7 @@ import { ProfileService } from '../../../../core/auth/profile.service';
 
 /**
  * Modal de detalhes do card.
- * Permite edição de título, descrição e gerenciamento de comentários.
+ * Permite edição de título, descrição e gerenciamento de comentário
  */
 @Component({
   selector: 'app-card-modal',
@@ -28,18 +28,18 @@ export class CardModalComponent implements OnInit {
   @Output() updateEvent = new EventEmitter<{ title?: string; description?: string }>();
   @Output() deleteEvent = new EventEmitter<void>();
 
-  // Creator Info
+  // Criador Info
   creatorName = signal<string>('');
 
-  // Title Editing
+  // Titulo editando
   isEditingTitle = signal(false);
   editTitle = '';
 
-  // Description Editing
+  // descrição editando
   isEditingDescription = signal(false);
   editDescription = '';
 
-  // Comments
+  // comentarios
   comments = signal<Comment[]>([]);
   newComment = '';
 
@@ -80,7 +80,7 @@ export class CardModalComponent implements OnInit {
         this.comments.update(prev => [...prev, added]);
         this.newComment = '';
       } else {
-        // Fallback fake se backend não responder 
+        // fallbrack de teste caso backend nao respomda
         // this.comments.update(prev => [...prev, { 
         //   id: Date.now(), 
         //   card_id: this.card.id, 
@@ -116,8 +116,8 @@ export class CardModalComponent implements OnInit {
     this.closeEvent.emit();
   }
 
-  // --- Title Logic ---
 
+  //titulo logica
   startEditTitle() {
     this.editTitle = this.card.content;
     this.isEditingTitle.set(true);
@@ -141,8 +141,7 @@ export class CardModalComponent implements OnInit {
     this.isEditingTitle.set(false);
   }
 
-  // --- Description Logic ---
-
+  //descrição logica
   startEditDescription() {
     this.editDescription = this.card.description || '';
     this.isEditingDescription.set(true);
@@ -163,8 +162,7 @@ export class CardModalComponent implements OnInit {
     this.isEditingDescription.set(false);
   }
 
-  // --- Actions ---
-
+  // Deletar card
   deleteCard() {
     if (confirm('Tem certeza que deseja excluir este cartão?')) {
       this.deleteEvent.emit();

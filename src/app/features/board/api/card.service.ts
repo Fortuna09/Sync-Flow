@@ -4,8 +4,8 @@ import { LoggerService } from '../../../core/services/logger.service';
 import { Card, CreateCardDto, UpdateCardDto, Comment } from '../models/board.model';
 
 /**
- * Serviço responsável por operações CRUD de Cards e Comentários.
- * Interage com as tabelas `cards` e `comments` do Supabase.
+ * Serviço responsável por operações CRUD de Cards e Comentários
+ * Interage com as tabelas cards e comments do Supabase
  */
 @Injectable({ providedIn: 'root' })
 export class CardService {
@@ -28,9 +28,8 @@ export class CardService {
     return data as Card[];
   }
 
-  /**
-   * Criar um novo card
-   */
+  
+   // Criar um novo card
   async createCard(dto: CreateCardDto): Promise<Card> {
     // Buscar a maior posição atual para colocar no final
     const { data: existing } = await this.supabase
@@ -98,7 +97,7 @@ export class CardService {
   }
 
   /**
-   * Mover card para outra lista e/ou posição
+   * Mover card para outra posição
    */
   async moveCard(cardId: number, newListId: number, newPosition: number): Promise<Card> {
     const { data, error } = await this.supabase
@@ -133,7 +132,11 @@ export class CardService {
     await Promise.all(updates);
   }
 
-  // --- Comentários ---
+  /**
+   * 
+   * --- Comentários ---
+   * 
+   *  */ 
 
   async getComments(cardId: number): Promise<Comment[]> {
     const { data, error } = await this.supabase

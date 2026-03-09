@@ -6,8 +6,8 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { getErrorMessage } from '../../../core/interfaces';
 
 /**
- * Componente de cadastro de novos usuários.
- * Após registro bem-sucedido, redireciona para criação da primeira organização.
+ * Componente de cadastro de novos usuários
+ * após registro bem-sucedido, redireciona para criação da primeira organização
  */
 @Component({
   selector: 'app-register',
@@ -32,7 +32,7 @@ export class RegisterComponent {
   isLoading = false;
   errorMessage = '';
 
-  // Validador customizado para confirmar senha
+  //validador customizado para confirmar senha
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');
@@ -68,7 +68,7 @@ export class RegisterComponent {
         last_name: lastName
       });
 
-      // Após cadastro, ir DIRETO para criar primeira organização
+      // Apos cadastro ir DIRETO para criar primeira organização
       this.router.navigate(['/organizations/new']);
     } catch (error: unknown) {
       this.errorMessage = getErrorMessage(error);

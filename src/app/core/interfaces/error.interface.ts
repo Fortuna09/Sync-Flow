@@ -1,6 +1,6 @@
 /**
- * Interface para erros da aplicação.
- * Tipagem genérica para tratamento de erros em catch blocks.
+ * Interface para erros da aplicação
+ * Tipagem genérica para tratamento de erros em catch blocks
  */
 export interface AppError {
   message: string;
@@ -10,7 +10,7 @@ export interface AppError {
 }
 
 /**
- * Type guard para verificar se um erro é do tipo AppError.
+ * Type guard para verificar se um erro é do tipo AppError
  */
 export function isAppError(error: unknown): error is AppError {
   return (
@@ -22,8 +22,8 @@ export function isAppError(error: unknown): error is AppError {
 }
 
 /**
- * Extrai mensagem de erro de forma segura.
- * Útil para blocos catch onde o tipo do erro é unknown.
+ * Extrai mensagem de erro de forma segura
+ * Útil para blocos catch onde o tipo do erro é unknown
  */
 export function getErrorMessage(error: unknown): string {
   if (isAppError(error)) {

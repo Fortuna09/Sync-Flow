@@ -7,8 +7,8 @@ import { ProfileService } from '../../../core/auth/profile.service';
 import { getErrorMessage } from '../../../core/interfaces';
 
 /**
- * Componente para criação da primeira organização do usuário.
- * Exibido após o cadastro inicial.
+ *Componente para criação da primeira organização do usuário
+ *Exibido após o cadastro inicial
  */
 @Component({
   selector: 'app-create-organization',
@@ -42,13 +42,13 @@ export class CreateOrganizationComponent {
     this.errorMessage = '';
 
     try {
-      // Primeira organização é sempre pessoal
+      //Primeira organização é sempre pessoal
       const org = await this.orgService.createOrganization(this.orgForm.value.name, true);
       
-      // Marcar no profile que já criou organização
+      //Marcar no profile que já criou organização
       await this.profileService.markOrgCreated();
       
-      // Redirecionar para a lista de organizações
+      //Redirecionar para a lista de organizações
       this.router.navigate(['/organizations']);
     } catch (error: unknown) {
       this.errorMessage = getErrorMessage(error);

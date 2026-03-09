@@ -6,7 +6,7 @@ import { Board } from '../models/board.model';
 export { Board } from '../models/board.model';
 
 /**
- * DTO para criação de um novo Board.
+ * DTO para criação de um novo Board
  */
 interface CreateBoardPayload {
   title: string;
@@ -16,8 +16,8 @@ interface CreateBoardPayload {
 }
 
 /**
- * Serviço responsável por operações CRUD de Boards (quadros Kanban).
- * Interage com a tabela `boards` do Supabase.
+ * Serviço responsável por operações CRUD de boards
+ * Interage com a tabela boards do Supabase
  */
 @Injectable({ providedIn: 'root' })
 export class BoardService {
@@ -39,7 +39,7 @@ export class BoardService {
     return data as Board[];
   }
 
-  // 2. Buscar todos os boards (legacy - para compatibilidade)
+  // Buscar todos os boards (legacy - para compatibilidade)
   async getBoards(): Promise<Board[]> {
     const { data, error } = await this.supabase
       .from('boards')
@@ -53,7 +53,7 @@ export class BoardService {
     return data as Board[];
   }
 
-  // 3. Criar um novo board dentro de uma organização
+  //Criar um novo board dentro de uma organização
   async createBoard(title: string, color: string = 'bg-blue-600', organizationId?: string): Promise<Board> {
     // Pega o usuário atual para garantir a autoria
     const { data: { user } } = await this.supabase.auth.getUser();
