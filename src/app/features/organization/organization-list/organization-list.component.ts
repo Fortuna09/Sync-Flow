@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrganizationService, Organization } from '../organization.service';
 import { ProfileService } from '../../../core/auth/profile.service';
+import { OrganizationContextService } from '../../../core/services/organization-context.service';
 import { TopbarComponent } from '../../../shared/ui/topbar/topbar.component';
 import { NewOrgModalComponent } from '../../../shared/ui/new-org-modal/new-org-modal.component';
 import { getErrorMessage } from '../../../core/interfaces';
@@ -21,6 +22,7 @@ import { getErrorMessage } from '../../../core/interfaces';
 export class OrganizationListComponent implements OnInit {
   private orgService = inject(OrganizationService);
   private profileService = inject(ProfileService);
+  private orgContext = inject(OrganizationContextService);
   private router = inject(Router);
 
   organizations = signal<Organization[]>([]);
@@ -78,9 +80,8 @@ export class OrganizationListComponent implements OnInit {
   }
 
   enterOrganization(org: Organization): void {
-    // Salvar org selecionada no localStorage ou serviço
-    localStorage.setItem('currentOrganizationId', org.id);
-    localStorage.setItem('currentOrganizationSlug', org.slug);
+    // Salvar org no serviço de contexto (com Signals e persistência)
+    this.orgContext.setCurrentOrganization(org);
     
     // Navegar para os boards da organização
     this.router.navigate(['/org', org.slug, 'boards']);
