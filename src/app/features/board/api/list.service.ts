@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../../core/tokens/supabase.token';
+import { LoggerService } from '../../../core/services/logger.service';
 import { List, CreateListDto, UpdateListDto } from '../models/board.model';
 
 /**
@@ -9,6 +10,7 @@ import { List, CreateListDto, UpdateListDto } from '../models/board.model';
 @Injectable({ providedIn: 'root' })
 export class ListService {
   private supabase = inject(SUPABASE_CLIENT);
+  private logger = inject(LoggerService);
 
   /** Busca todas as listas de um board com seus cards ordenados */
   async getListsByBoardId(boardId: number): Promise<List[]> {
@@ -19,7 +21,7 @@ export class ListService {
       .order('position', { ascending: true });
 
     if (error) {
-      console.error('Erro ao buscar listas:', error);
+      this.logger.error('Erro ao buscar listas', error);
       throw error;
     }
 
@@ -57,7 +59,7 @@ export class ListService {
       .single();
 
     if (error) {
-      console.error('Erro ao criar lista:', error);
+      this.logger.error('Erro ao criar lista', error);
       throw error;
     }
 
@@ -76,7 +78,7 @@ export class ListService {
       .single();
 
     if (error) {
-      console.error('Erro ao atualizar lista:', error);
+      this.logger.error('Erro ao atualizar lista', error);
       throw error;
     }
 
@@ -93,7 +95,7 @@ export class ListService {
       .eq('id', id);
 
     if (error) {
-      console.error('Erro ao excluir lista:', error);
+      this.logger.error('Erro ao excluir lista', error);
       throw error;
     }
   }

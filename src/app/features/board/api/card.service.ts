@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../../core/tokens/supabase.token';
+import { LoggerService } from '../../../core/services/logger.service';
 import { Card, CreateCardDto, UpdateCardDto, Comment } from '../models/board.model';
 
 /**
@@ -9,6 +10,7 @@ import { Card, CreateCardDto, UpdateCardDto, Comment } from '../models/board.mod
 @Injectable({ providedIn: 'root' })
 export class CardService {
   private supabase = inject(SUPABASE_CLIENT);
+  private logger = inject(LoggerService);
 
   /** Busca todos os cards de uma lista ordenados por posição */
   async getCardsByListId(listId: number): Promise<Card[]> {
@@ -19,7 +21,7 @@ export class CardService {
       .order('position', { ascending: true });
 
     if (error) {
-      console.error('Erro ao buscar cards:', error);
+      this.logger.error('Erro ao buscar cards', error);
       throw error;
     }
 
@@ -54,7 +56,7 @@ export class CardService {
       .single();
 
     if (error) {
-      console.error('Erro ao criar card:', error);
+      this.logger.error('Erro ao criar card', error);
       throw error;
     }
 
@@ -73,7 +75,7 @@ export class CardService {
       .single();
 
     if (error) {
-      console.error('Erro ao atualizar card:', error);
+      this.logger.error('Erro ao atualizar card', error);
       throw error;
     }
 
@@ -90,7 +92,7 @@ export class CardService {
       .eq('id', id);
 
     if (error) {
-      console.error('Erro ao excluir card:', error);
+      this.logger.error('Erro ao excluir card', error);
       throw error;
     }
   }
@@ -110,7 +112,7 @@ export class CardService {
       .single();
 
     if (error) {
-      console.error('Erro ao mover card:', error);
+      this.logger.error('Erro ao mover card', error);
       throw error;
     }
 

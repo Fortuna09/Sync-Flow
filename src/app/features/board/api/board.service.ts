@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../../core/tokens/supabase.token';
+import { LoggerService } from '../../../core/services/logger.service';
 import { Board } from '../models/board.model';
 
 export { Board } from '../models/board.model';
@@ -21,6 +22,7 @@ interface CreateBoardPayload {
 @Injectable({ providedIn: 'root' })
 export class BoardService {
   private supabase = inject(SUPABASE_CLIENT);
+  private logger = inject(LoggerService);
 
   /** Busca todos os boards de uma organização específica */
   async getBoardsByOrganization(organizationId: string): Promise<Board[]> {
@@ -31,7 +33,7 @@ export class BoardService {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Erro ao buscar boards:', error);
+      this.logger.error('Erro ao buscar boards por organização', error);
       throw error;
     }
     return data as Board[];
@@ -45,7 +47,7 @@ export class BoardService {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Erro ao buscar boards:', error);
+      this.logger.error('Erro ao buscar boards', error);
       throw error;
     }
     return data as Board[];
