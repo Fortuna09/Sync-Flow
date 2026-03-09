@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
 import { getErrorMessage } from '../../../core/interfaces';
@@ -11,7 +12,7 @@ import { getErrorMessage } from '../../../core/interfaces';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -36,23 +37,6 @@ export class LoginComponent {
     try {
       await this.authService.signIn(email!, password!);
       // O redirect acontece no Service
-    } catch (error: unknown) {
-      this.handleError(error);
-    }
-  }
-
-  async onSignUp() {
-    if (this.loginForm.invalid) {
-      this.errorMessage.set('Preencha email e senha (mín 6 chars) para criar conta.');
-      return;
-    }
-    this.startLoading();
-
-    const { email, password } = this.loginForm.getRawValue();
-
-    try {
-      await this.authService.signUp(email!, password!);
-      this.errorMessage.set('Conta criada! Entrando...');
     } catch (error: unknown) {
       this.handleError(error);
     }

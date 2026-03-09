@@ -38,14 +38,12 @@
           {{ isLoading() ? 'Carregando...' : 'Entrar' }}
         </button>
 
-        <button 
-          type="button" 
-          (click)="onSignUp()"
-          [disabled]="loginForm.invalid || isLoading()"
-          class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+        <a 
+          routerLink="/register"
+          class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
         >
           Criar nova conta
-        </button>
+        </a>
       </div>
 
       @if (errorMessage()) {
