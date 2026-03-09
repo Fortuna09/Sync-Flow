@@ -1,5 +1,15 @@
+/**
+ * Production environment configuration.
+ * 
+ * IMPORTANT: Do not commit real credentials to this file!
+ * These placeholder values are replaced during CI/CD build.
+ * 
+ * For CI/CD (Vercel/GitHub Actions):
+ * 1. Set SUPABASE_URL and SUPABASE_KEY in your CI environment variables
+ * 2. Use the set-env script before build: npm run set-env && npm run build
+ */
 export const environment = {
   production: true,
-  supabaseUrl: 'https://tfglmkixbvlnrjjsrdwa.supabase.co',
-  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZ2xta2l4YnZsbnJqanNyZHdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDc4NTAsImV4cCI6MjA4MTA4Mzg1MH0.eF4y2QPQ1fce2mdhZ9mq_nV8Z9RkAixirTZu8FHSovY'
+  supabaseUrl: 'SUPABASE_URL_PLACEHOLDER',
+  supabaseKey: 'SUPABASE_KEY_PLACEHOLDER'
 };
