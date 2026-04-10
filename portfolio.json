@@ -1,8 +1,8 @@
 {
     "titulo": "SyncFlow - Plataforma SaaS de Gestão de Projetos (MVP)",
-    "objetivo": "Desenvolver uma arquitetura Fullstack Serverless escalável para gestão de tarefas (estilo Kanban), focando em performance reativa e isolamento de dados (Multi-tenancy). Obs: Projeto em produção contínua, recebendo novas features incrementalmente via pipeline de CI/CD.",
-    "desafio": "Implementar um sistema de segurança robusto utilizando Row Level Security (RLS) no PostgreSQL para garantir privacidade total entre usuários, além de modernizar o gerenciamento de estado no Front-end substituindo Zone.js por Angular Signals.",
-    "tecnologia": "Angular 17+, TypeScript, Supabase (Auth/DB), TailwindCSS, Vercel, GitHub Actions",
+    "objetivo": "Desenvolver uma arquitetura Fullstack Serverless escalável para gestão ágil de tarefas, com foco em performance corporativa. Evolução contínua orientada por pipelines de CI/CD estruturados.",
+    "desafio": "Estruturar isolamento e segurança rigorosa de dados via Row Level Security (RLS) associado à modernização no estado front-end com Angular Signals, aposentando frameworks passivos e mitigando vazamentos de escopo.",
+    "tecnologia": "Angular, TypeScript, Supabase, Tailwind CSS, Vercel, GitHub Actions",
     "imagem": "/pub.png",
-    "tags": ["Angular", "SaaS", "Supabase", "Architecture", "DevOps"]
+    "tags": ["Angular", "SaaS", "Supabase", "CI/CD", "Full-stack"]
 }
