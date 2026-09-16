@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Card, Comment } from '../../models/board.model';
 import { CardService } from '../../api/card.service';
 import { ProfileService } from '../../../../core/auth/profile.service';
+import { DialogService } from '../../../../core/services/dialog.service';
 
 /**
  * Modal de detalhes do card.
@@ -20,6 +21,7 @@ export class CardModalComponent implements OnInit {
   private elementRef = inject(ElementRef);
   private cardService = inject(CardService);
   private profileService = inject(ProfileService);
+  private dialogService = inject(DialogService);
 
   @Input({ required: true }) card!: Card;
   @Input({ required: true }) listName!: string;
@@ -96,8 +98,13 @@ export class CardModalComponent implements OnInit {
   }
 
   async deleteComment(id: number) {
-    if (!confirm('Excluir comentário?')) return;
-    
+    const ok = await this.dialogService.confirm('Excluir comentário?', {
+      title: 'Excluir comentário',
+      confirmText: 'Excluir',
+      danger: true
+    });
+    if (!ok) return;
+
     try {
       await this.cardService.deleteComment(id);
       this.comments.update(prev => prev.filter(c => c.id !== id));
@@ -163,8 +170,13 @@ export class CardModalComponent implements OnInit {
   }
 
   // Deletar card
-  deleteCard() {
-    if (confirm('Tem certeza que deseja excluir este cartão?')) {
+  async deleteCard() {
+    const ok = await this.dialogService.confirm('Tem certeza que deseja excluir este cartão?', {
+      title: 'Excluir cartão',
+      confirmText: 'Excluir',
+      danger: true
+    });
+    if (ok) {
       this.deleteEvent.emit();
     }
   }

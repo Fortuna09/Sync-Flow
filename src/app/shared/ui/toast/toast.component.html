@@ -1,0 +1,14 @@
+<div class="fixed top-4 right-4 z-[1200] flex flex-col gap-2 w-full max-w-sm pointer-events-none">
+  @for (n of notifications(); track n.id) {
+    <div
+      class="pointer-events-auto flex items-start gap-2 rounded-lg shadow-lg px-4 py-3 text-sm text-white"
+      [class.bg-red-600]="n.type === 'error'"
+      [class.bg-emerald-600]="n.type === 'success'"
+      [class.bg-gray-800]="n.type === 'info'"
+    >
+      <span>{{ iconFor(n.type) }}</span>
+      <span class="flex-1">{{ n.message }}</span>
+      <button (click)="dismiss(n.id)" class="text-white/80 hover:text-white leading-none text-base">×</button>
+    </div>
+  }
+</div>

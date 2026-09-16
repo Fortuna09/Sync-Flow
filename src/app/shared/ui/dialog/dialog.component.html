@@ -1,0 +1,40 @@
+@if (request(); as req) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1100] p-4" (click)="cancel()">
+    <div class="bg-white rounded-xl w-full max-w-sm shadow-2xl p-6" (click)="$event.stopPropagation()">
+      <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ req.title }}</h2>
+      <p class="text-sm text-gray-600 mb-4">{{ req.message }}</p>
+
+      @if (req.mode === 'prompt') {
+        <input
+          type="text"
+          autofocus
+          [ngModel]="promptValue()"
+          (ngModelChange)="promptValue.set($event)"
+          [placeholder]="req.placeholder || ''"
+          (keyup.enter)="confirm()"
+          (keyup.escape)="cancel()"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        >
+      }
+
+      <div class="flex justify-end gap-2">
+        <button
+          (click)="cancel()"
+          class="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition"
+        >
+          {{ req.cancelText }}
+        </button>
+        <button
+          (click)="confirm()"
+          class="px-4 py-2 text-sm rounded-lg text-white transition"
+          [class.bg-red-600]="req.danger"
+          [class.hover:bg-red-700]="req.danger"
+          [class.bg-indigo-600]="!req.danger"
+          [class.hover:bg-indigo-700]="!req.danger"
+        >
+          {{ req.confirmText }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

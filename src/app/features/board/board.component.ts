@@ -4,6 +4,8 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { BoardService, Board } from './api/board.service';
 import { TopbarComponent } from '../../shared/ui/topbar/topbar.component';
 import { OrganizationService, Organization } from '../organization/organization.service';
+import { NotificationService } from '../../core/services/notification.service';
+import { DialogService } from '../../core/services/dialog.service';
 
 type TabType = 'boards' | 'members';
 
@@ -22,6 +24,8 @@ export class BoardComponent implements OnInit {
   private boardService = inject(BoardService);
   private orgService = inject(OrganizationService);
   private route = inject(ActivatedRoute);
+  private notificationService = inject(NotificationService);
+  private dialogService = inject(DialogService);
 
   //Signals
   boards = signal<Board[]>([]);
@@ -75,7 +79,7 @@ export class BoardComponent implements OnInit {
       this.boards.set(data);
     } catch (error) {
       console.error(error);
-      alert('Erro ao carregar os quadros.');
+      this.notificationService.error('Erro ao carregar os quadros.');
     } finally {
       this.isLoading.set(false);
     }
@@ -100,11 +104,15 @@ export class BoardComponent implements OnInit {
   async createTestBoard(): Promise<void> {
     const org = this.organization();
     if (!org) {
-      alert('Organização não carregada');
+      this.notificationService.error('Organização não carregada');
       return;
     }
 
-    const title = prompt('Qual o nome do quadro?');
+    const title = await this.dialogService.prompt('Qual o nome do quadro?', {
+      title: 'Novo quadro',
+      placeholder: 'Ex: Sprint 12',
+      confirmText: 'Criar'
+    });
     if (!title) return;
 
     //Cores aleatórias
@@ -116,7 +124,7 @@ export class BoardComponent implements OnInit {
       this.loadBoards();
     } catch (error) {
       console.error('Erro ao criar quadro:', error);
-      alert('Erro ao criar quadro.');
+      this.notificationService.error('Erro ao criar quadro.');
     }
   }
 }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 import { List, Card } from '../../models/board.model';
 import { KanbanCardComponent } from '../kanban-card/kanban-card.component';
+import { DialogService } from '../../../../core/services/dialog.service';
 
 /**
  * Componente que representa uma coluna/lista no quadro Kanban
@@ -18,6 +19,7 @@ import { KanbanCardComponent } from '../kanban-card/kanban-card.component';
 })
 export class KanbanListComponent {
   private elementRef = inject(ElementRef);
+  private dialogService = inject(DialogService);
 
   @Input({ required: true }) list!: List;
   @Input() connectedLists: string[] = [];
@@ -64,8 +66,12 @@ export class KanbanListComponent {
     this.isEditingTitle.set(false);
   }
 
-  onDeleteList() {
-    if (confirm(`Excluir lista "${this.list.title}" e todos os seus cartões?`)) {
+  async onDeleteList() {
+    const ok = await this.dialogService.confirm(
+      `Excluir lista "${this.list.title}" e todos os seus cartões?`,
+      { title: 'Excluir lista', confirmText: 'Excluir', danger: true }
+    );
+    if (ok) {
       this.deleteList.emit(this.list);
     }
   }
@@ -111,8 +117,12 @@ export class KanbanListComponent {
     this.editCard.emit(card);
   }
 
-  onDeleteCard(card: Card) {
-    if (confirm(`Excluir cartão "${card.content}"?`)) {
+  async onDeleteCard(card: Card) {
+    const ok = await this.dialogService.confirm(
+      `Excluir cartão "${card.content}"?`,
+      { title: 'Excluir cartão', confirmText: 'Excluir', danger: true }
+    );
+    if (ok) {
       this.deleteCard.emit(card);
     }
   }

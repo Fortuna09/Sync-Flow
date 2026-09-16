@@ -11,6 +11,7 @@ import { Board, List, Card } from '../../models/board.model';
 import { KanbanListComponent } from '../../components/kanban-list/kanban-list.component';
 import { CardModalComponent } from '../../components/card-modal/card-modal.component';
 import { TopbarComponent } from '../../../../shared/ui/topbar/topbar.component';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 /**
  * Componente principal de visualização e edição de um Board
@@ -38,6 +39,7 @@ export class BoardDetailComponent implements OnInit {
   private cardService = inject(CardService);
   private orgService = inject(OrganizationService);
   private elementRef = inject(ElementRef);
+  private notificationService = inject(NotificationService);
   
   /** 
    * DestroyRef para gerenciamento automático de subscriptions
@@ -149,7 +151,7 @@ export class BoardDetailComponent implements OnInit {
       this.isAddingList.set(false);
     } catch (error) {
       console.error('Erro ao criar lista:', error);
-      alert('Erro ao criar lista');
+      this.notificationService.error('Erro ao criar lista');
     }
   }
 
@@ -193,7 +195,7 @@ export class BoardDetailComponent implements OnInit {
       );
     } catch (error) {
       console.error('Erro ao criar card:', error);
-      alert('Erro ao criar cartão');
+      this.notificationService.error('Erro ao criar cartão');
     }
   }
 
