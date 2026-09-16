@@ -15,9 +15,10 @@ describe('CreateOrganizationComponent', () => {
 
   beforeEach(async () => {
     orgServiceSpy = jasmine.createSpyObj('OrganizationService', ['createOrganization']);
-    profileServiceSpy = jasmine.createSpyObj('ProfileService', [], {
+    profileServiceSpy = jasmine.createSpyObj('ProfileService', ['markOrgCreated'], {
       currentProfile: jasmine.createSpy().and.returnValue(null) // Mock signal
     });
+    profileServiceSpy.markOrgCreated.and.resolveTo(undefined);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
@@ -55,7 +56,8 @@ describe('CreateOrganizationComponent', () => {
 
     await component.onSubmit();
 
-    expect(orgServiceSpy.createOrganization).toHaveBeenCalledWith('Nova Org');
+    // Segundo argumento `true` = primeira organização é sempre pessoal (ver create-organization.component.ts)
+    expect(orgServiceSpy.createOrganization).toHaveBeenCalledWith('Nova Org', true);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/org', 'nova-org', 'boards']);
   });
 });

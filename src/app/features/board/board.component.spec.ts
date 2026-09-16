@@ -1,15 +1,18 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { BoardComponent } from './board.component';
 import { BoardService } from './api/board.service';
 import { OrganizationService } from '../organization/organization.service';
 import { SUPABASE_CLIENT } from '../../core/tokens/supabase.token';
+import { createMockSupabaseClient } from '../../core/tokens/supabase.token.mock';
+import { ProfileService } from '../../core/auth/profile.service';
 
 describe('BoardComponent', () => {
   let component: BoardComponent;
   let fixture: ComponentFixture<BoardComponent>;
   let boardServiceSpy: jasmine.SpyObj<BoardService>;
   let orgServiceSpy: jasmine.SpyObj<OrganizationService>;
+  let profileServiceSpy: jasmine.SpyObj<ProfileService>;
 
   const mockOrganization = {
     id: 'org-1',
@@ -27,16 +30,21 @@ describe('BoardComponent', () => {
   beforeEach(async () => {
     boardServiceSpy = jasmine.createSpyObj('BoardService', ['getBoardsByOrganization', 'createBoard']);
     orgServiceSpy = jasmine.createSpyObj('OrganizationService', ['getOrganizationBySlug']);
+    profileServiceSpy = jasmine.createSpyObj('ProfileService', ['getMyProfile']);
 
     boardServiceSpy.getBoardsByOrganization.and.resolveTo(mockBoards);
     orgServiceSpy.getOrganizationBySlug.and.resolveTo(mockOrganization);
+    profileServiceSpy.getMyProfile.and.resolveTo(null);
 
     await TestBed.configureTestingModule({
       imports: [BoardComponent],
       providers: [
         { provide: BoardService, useValue: boardServiceSpy },
         { provide: OrganizationService, useValue: orgServiceSpy },
-        { provide: SUPABASE_CLIENT, useValue: {} },
+        { provide: ProfileService, useValue: profileServiceSpy },
+        { provide: SUPABASE_CLIENT, useValue: createMockSupabaseClient() },
+        // TopbarComponent (renderizado dentro de BoardComponent) usa routerLink
+        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: {

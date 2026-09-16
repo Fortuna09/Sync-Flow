@@ -44,12 +44,12 @@ export class CreateOrganizationComponent {
     try {
       //Primeira organização é sempre pessoal
       const org = await this.orgService.createOrganization(this.orgForm.value.name, true);
-      
+
       //Marcar no profile que já criou organização
       await this.profileService.markOrgCreated();
-      
-      //Redirecionar para a lista de organizações
-      this.router.navigate(['/organizations']);
+
+      //Redirecionar direto para o board da organização recém-criada
+      this.router.navigate(['/org', org.slug, 'boards']);
     } catch (error: unknown) {
       this.errorMessage = getErrorMessage(error);
     } finally {

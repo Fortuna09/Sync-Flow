@@ -30,5 +30,8 @@ jobs:
     #Verifica se o código compila
     - name: Verificar Build (Produção)
       run: npm run build -- --configuration production
-      
-    # Futuramente 'npm run test' aqui. 
+
+    #Roda a suíte de testes (Karma + Jasmine) headless
+    - name: Rodar testes
+      run: npx ng test --watch=false --browsers=ChromeHeadless
+
